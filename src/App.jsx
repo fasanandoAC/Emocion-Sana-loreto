@@ -292,6 +292,7 @@ Claves para cuidarte:
             <li><a href="#actividades">Actividades</a></li>
             <li><a href="#biblioteca">Biblioteca</a></li>
             <li><a href="#etapas">Etapas</a></li>
+            <li><a href="#creadoras">Creadoras</a></li>
             <li><a href="#ayuda">Ayuda Gratuita</a></li>
           </ul>
         </nav>
@@ -305,6 +306,12 @@ Claves para cuidarte:
         <div className="hero-pill-badge">
           <span className="sparkle-icon">✨</span>
           <span>Espacio Seguro · Loreto Unido por tu Bienestar Emocional</span>
+        </div>
+
+        <div>
+          <span className="creators-pill-badge">
+            💖 Iniciativa creada con amor por <strong>Crhistel y Alexia</strong>
+          </span>
         </div>
 
         {/* TITULO REQUERIDO */}
@@ -855,6 +862,50 @@ Claves para cuidarte:
         </div>
       </section>
 
+      {/* SECCIÓN: CREADORAS */}
+      <section id="creadoras" className="content-section">
+        <div className="creators-card">
+          <span className="section-tag">Nuestra Misión y Corazón</span>
+          <h2 className="section-title" style={{ fontSize: '2.5rem' }}>
+            Conoce a las Creadoras
+          </h2>
+          <p className="section-description">
+            Esta plataforma nació de la empatía, el compromiso y el amor por nuestra comunidad en Loreto. 
+            Queremos que cada joven, adolescente y adulto sepa que su bienestar emocional es lo más valioso.
+          </p>
+
+          <div className="creators-avatar-row">
+            <div className="creator-profile">
+              <div className="creator-avatar-icon">🌸</div>
+              <h3 className="creator-name">Crhistel</h3>
+              <span className="creator-role">Co-creadora e Impulsora</span>
+              <p style={{ fontSize: '0.92rem', color: 'var(--texto-secundario)', textAlign: 'center', marginTop: '0.35rem' }}>
+                «Deseo que este rincón sea un abrazo sincero para cuando sientas que no puedes más.»
+              </p>
+            </div>
+
+            <div className="creator-profile">
+              <div className="creator-avatar-icon">🌷</div>
+              <h3 className="creator-name">Alexia</h3>
+              <span className="creator-role">Co-creadora e Impulsora</span>
+              <p style={{ fontSize: '0.92rem', color: 'var(--texto-secundario)', textAlign: 'center', marginTop: '0.35rem' }}>
+                «Cuidar de tu mente no es debilidad, es el mayor acto de amor y valentía que harás por ti.»
+              </p>
+            </div>
+          </div>
+
+          <div style={{ background: 'var(--lila-muy-claro)', padding: '1.4rem 1.8rem', borderRadius: '20px', border: '1.5px solid var(--lila-medio)', maxWidth: '680px', margin: '0 auto' }}>
+            <p style={{ color: 'var(--texto-principal)', fontStyle: 'italic', fontWeight: 600, fontSize: '1.05rem', lineHeight: '1.6' }}>
+              «Juntas creamos Emoción Sana Loreto para recordar que en nuestra región nadie camina solo/a. 
+              Sanar es posible y estamos aquí para acompañarte en cada paso.»
+            </p>
+            <span style={{ display: 'block', marginTop: '0.6rem', color: 'var(--rosado-fucsia)', fontWeight: 800 }}>
+              — Crhistel & Alexia 💜
+            </span>
+          </div>
+        </div>
+      </section>
+
       {/* FOOTER */}
       <footer className="site-footer">
         <div className="footer-inner">
@@ -866,8 +917,11 @@ Claves para cuidarte:
             «Como los ríos de nuestra Amazonía que siempre encuentran su curso hacia el mar, 
             tu vida también encontrará calma y luz. Florecer a tu propio ritmo es el camino.»
           </p>
+          <p className="footer-creators">
+            🌸 Una iniciativa creada con el corazón por <strong>Crhistel y Alexia</strong> para Loreto.
+          </p>
           <p className="footer-copy">
-            © {new Date().getFullYear()} Emoción Sana Loreto · Promoviendo la salud mental y emocional entre jóvenes, adolescentes y adultos.
+            © {new Date().getFullYear()} Emoción Sana Loreto · Desarrollado por Crhistel & Alexia · Todos los derechos reservados.
           </p>
         </div>
       </footer>

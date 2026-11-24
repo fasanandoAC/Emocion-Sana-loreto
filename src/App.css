@@ -1268,6 +1268,98 @@
   color: var(--texto-secundario);
 }
 
+/* BADGE Y SECCIÓN DE LAS CREADORAS */
+.creators-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1.3rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(251, 207, 232, 0.8) 0%, rgba(233, 213, 255, 0.8) 100%);
+  border: 1.5px solid var(--rosado-suave);
+  color: var(--rosado-fucsia);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 4px 15px rgba(244, 114, 182, 0.2);
+}
+
+.creators-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid var(--rosado-suave);
+  border-radius: 32px;
+  padding: 3.5rem 2.5rem;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  max-width: 920px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.creators-avatar-row {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 2.2rem 0;
+  flex-wrap: wrap;
+}
+
+.creator-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--lila-muy-claro);
+  border: 2px solid var(--lila-medio);
+  border-radius: 24px;
+  padding: 1.8rem 2.2rem;
+  min-width: 230px;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.creator-profile:hover {
+  transform: translateY(-5px);
+  border-color: var(--rosado-vibrante);
+  box-shadow: 0 10px 25px rgba(244, 114, 182, 0.3);
+}
+
+.creator-avatar-icon {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--lila-medio) 0%, var(--rosado-suave) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  box-shadow: 0 6px 18px rgba(244, 114, 182, 0.35);
+  border: 3px solid #ffffff;
+}
+
+.creator-name {
+  font-family: var(--font-heading);
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--texto-principal);
+}
+
+.creator-role {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--rosado-fucsia);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.footer-creators {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--rosado-fucsia);
+  margin-top: 0.5rem;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
