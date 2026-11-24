@@ -443,10 +443,10 @@ Claves para cuidarte:
 
           {releasedMessage && (
             <div className="thought-released-box">
-              <p style={{ color: 'var(--lila-suave)', fontStyle: 'italic', marginBottom: '0.75rem' }}>
+              <p style={{ color: 'var(--rosado-fucsia)', fontStyle: 'italic', marginBottom: '0.75rem' }}>
                 «{releasedMessage.thought}»
               </p>
-              <p style={{ color: 'var(--blanco)', fontSize: '1.15rem', fontWeight: 600 }}>
+              <p style={{ color: 'var(--texto-principal)', fontSize: '1.15rem', fontWeight: 700 }}>
                 {releasedMessage.message}
               </p>
               <button 
@@ -491,7 +491,7 @@ Claves para cuidarte:
               style={{ width: `${groundingPercentage}%` }}
             ></div>
           </div>
-          <p style={{ textAlign: 'center', color: 'var(--lila-suave)', fontWeight: 700, marginBottom: '2rem' }}>
+          <p style={{ textAlign: 'center', color: 'var(--rosado-fucsia)', fontWeight: 800, marginBottom: '2rem' }}>
             Progreso: {completedGroundingSteps} de 5 pasos completados {completedGroundingSteps === 5 && '🎉 ¡Excelente! Siente la calma en tu cuerpo.'}
           </p>
 
@@ -635,7 +635,7 @@ Claves para cuidarte:
               </div>
               <p className="mood-response-message">{selectedMood.advice}</p>
 
-              <h5 style={{ color: 'var(--lila-luminoso)', fontSize: '1.15rem', marginBottom: '0.75rem' }}>
+              <h5 style={{ color: 'var(--rosado-fucsia)', fontSize: '1.15rem', marginBottom: '0.75rem', fontWeight: 800 }}>
                 💡 3 pequeños pasos para reconfortarte ahora:
               </h5>
               <div className="mood-tips-list">
@@ -710,7 +710,7 @@ Claves para cuidarte:
               ✕
             </button>
             <span className="section-tag">{selectedArticle.category}</span>
-            <h2 style={{ fontSize: '1.9rem', color: 'var(--blanco)', margin: '0.8rem 0 1.25rem' }}>
+            <h2 style={{ fontSize: '1.9rem', color: 'var(--texto-principal)', margin: '0.8rem 0 1.25rem' }}>
               {selectedArticle.title}
             </h2>
             <img 
@@ -803,13 +803,13 @@ Claves para cuidarte:
       {/* SECCIÓN 5: LÍNEAS DE AYUDA Y CONTACTO */}
       <section id="ayuda" className="content-section">
         <div className="help-section-card">
-          <span className="section-tag" style={{ background: 'rgba(216, 180, 254, 0.25)', color: 'var(--blanco)' }}>
+          <span className="section-tag">
             Líneas de Atención Gratuita y Confidencial
           </span>
-          <h2 className="section-title" style={{ color: 'var(--blanco)' }}>
+          <h2 className="section-title">
             Nunca estás solo/a en Loreto: Estamos para ayudarte
           </h2>
-          <p className="section-description" style={{ color: 'var(--lila-luminoso)' }}>
+          <p className="section-description">
             Si tú o alguien que conoces está atravesando una crisis emocional, comunícate de manera gratuita, confidencial y sin costo alguno.
           </p>
 

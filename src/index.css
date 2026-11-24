@@ -2,43 +2,43 @@
   --font-heading: 'Outfit', sans-serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
 
-  /* Paleta solicitada: Morado, Violeta, Rosado y Lila Bajo (CERO AMARILLO) */
-  --morado-oscuro: #140326;
-  --morado-profundo: #22063d;
-  --morado-vibrante: #581c87;
-  --morado-noche: #0f021f;
-  
-  --violeta-neon: #9333ea;
-  --violeta-electrico: #8b5cf6;
-  --violeta-intenso: #7c3aed;
-  --violeta-glow: rgba(147, 51, 234, 0.4);
+  /* PALETA SOLICITADA: LILA CLARO Y ROSADO */
+  --lila-muy-claro: #faf5ff;
+  --lila-fondo: #f5f0ff;
+  --lila-claro: #ede9fe;
+  --lila-suave: #e9d5ff;
+  --lila-medio: #d8b4fe;
+  --lila-acento: #c084fc;
+  --lila-vibrante: #a855f7;
+  --lila-profundo: #7c3aed;
+  --lila-oscuro: #581c87;
+  --lila-texto: #2e1065;
 
-  --rosado-neon: #ec4899;
-  --rosado-vibrante: #f43f5e;
-  --rosado-fucsia: #db2777;
+  --rosado-muy-claro: #fdf2f8;
+  --rosado-fondo: #fff1f2;
+  --rosado-pastel: #fce7f3;
+  --rosado-claro: #fbcfe8;
   --rosado-suave: #f472b6;
-  --rosado-pastel: #fbcfe8;
-  --rosado-glow: rgba(236, 72, 153, 0.4);
-
-  /* Tonos de Lila Bajo y Lavanda para reemplazar el amarillo */
-  --lila-bajo: #e9d5ff;
-  --lila-suave: #d8b4fe;
-  --lila-luminoso: #f3e8ff;
-  --lila-pastel: #ede9fe;
-  --lila-glow: rgba(216, 180, 254, 0.5);
+  --rosado-vibrante: #ec4899;
+  --rosado-fucsia: #db2777;
+  --rosado-profundo: #9d174d;
 
   --blanco: #ffffff;
-  --texto-principal: #ffffff;
-  --texto-secundario: #f5d0fe;
-  --texto-lila: #e9d5ff;
-  --texto-apagado: #c4b5fd;
+  --blanco-puro: #ffffff;
+  --texto-principal: #2e1065;
+  --texto-secundario: #581c87;
+  --texto-suave: #701a75;
+  --texto-apagado: #86198f;
 
-  --card-bg: rgba(34, 6, 61, 0.78);
-  --card-border: rgba(216, 180, 254, 0.3);
-  --card-hover-border: rgba(236, 72, 153, 0.7);
+  --card-bg: rgba(255, 255, 255, 0.88);
+  --card-bg-subtle: rgba(250, 245, 255, 0.92);
+  --card-border: rgba(216, 180, 254, 0.6);
+  --card-hover-border: rgba(236, 72, 153, 0.8);
 
-  --shadow-lg: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(216, 180, 254, 0.25);
-  --shadow-neon: 0 0 20px rgba(236, 72, 153, 0.4), 0 0 40px rgba(139, 92, 246, 0.3);
+  --shadow-sm: 0 4px 12px rgba(168, 85, 247, 0.08);
+  --shadow-md: 0 10px 25px -5px rgba(168, 85, 247, 0.12), 0 8px 10px -6px rgba(236, 72, 153, 0.08);
+  --shadow-lg: 0 20px 40px -10px rgba(124, 58, 237, 0.15), 0 10px 20px -5px rgba(236, 72, 153, 0.12);
+  --shadow-glow: 0 0 30px rgba(244, 114, 182, 0.3), 0 0 50px rgba(216, 180, 254, 0.35);
 }
 
 * {
@@ -50,7 +50,7 @@
 html {
   scroll-behavior: smooth;
   font-family: var(--font-body);
-  background-color: var(--morado-oscuro);
+  background-color: var(--lila-fondo);
   color: var(--texto-principal);
 }
 
@@ -58,13 +58,14 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   background: 
-    radial-gradient(circle at 15% 15%, rgba(139, 92, 246, 0.35) 0%, transparent 40%),
-    radial-gradient(circle at 85% 20%, rgba(236, 72, 153, 0.32) 0%, transparent 42%),
-    radial-gradient(circle at 50% 60%, rgba(88, 28, 135, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 80% 85%, rgba(216, 180, 254, 0.25) 0%, transparent 35%),
-    radial-gradient(circle at 20% 90%, rgba(244, 63, 94, 0.22) 0%, transparent 40%),
-    linear-gradient(180deg, #10021f 0%, #1c0533 50%, #0d011a 100%);
+    radial-gradient(circle at 12% 15%, rgba(244, 114, 182, 0.18) 0%, transparent 40%),
+    radial-gradient(circle at 88% 18%, rgba(216, 180, 254, 0.28) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(251, 207, 232, 0.22) 0%, transparent 55%),
+    radial-gradient(circle at 80% 80%, rgba(192, 132, 252, 0.18) 0%, transparent 40%),
+    radial-gradient(circle at 20% 85%, rgba(244, 114, 182, 0.15) 0%, transparent 45%),
+    linear-gradient(180deg, #fbf7ff 0%, #f6effe 35%, #fff1f7 70%, #fbf7ff 100%);
   background-attachment: fixed;
+  color: var(--texto-principal);
 }
 
 #root {
@@ -78,6 +79,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-weight: 700;
   line-height: 1.2;
+  color: var(--texto-principal);
 }
 
 button {
@@ -91,20 +93,20 @@ button {
 a {
   text-decoration: none;
   color: inherit;
-  transition: color 0.2s ease;
+  transition: all 0.25s ease;
 }
 
-/* Scrollbar en lila bajo, rosado y violeta */
+/* Scrollbar en tonos lila claro y rosado suave */
 ::-webkit-scrollbar {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #10021f;
+  background: #f5f0ff;
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--lila-bajo), var(--rosado-neon), var(--violeta-neon));
+  background: linear-gradient(180deg, var(--lila-medio), var(--rosado-suave));
   border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--lila-luminoso), var(--rosado-vibrante), var(--violeta-intenso));
+  background: linear-gradient(180deg, var(--lila-acento), var(--rosado-vibrante));
 }
