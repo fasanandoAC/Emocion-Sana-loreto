@@ -11,16 +11,25 @@ export default function App() {
   const [countdown, setCountdown] = useState(4);
   const [cyclesCompleted, setCyclesCompleted] = useState(0);
 
-  // Estado para frases de aliento dinámicas
-  const [affirmationIndex, setAffirmationIndex] = useState(0);
+  // Estado para el Espacio Emocional: Ambientes de calma
+  const [activeAmbiance, setActiveAmbiance] = useState('selva');
 
-  const affirmations = [
-    "No tienes que tenerlo todo resuelto hoy. Respirar ya es un gran paso.",
-    "Tus sentimientos no son una carga ni una molestia; son una señal de que estás vivo y mereces cuidarte.",
-    "Pedir ayuda no significa que fracasaste; demuestra que tienes el valor inmenso de sanar.",
-    "Eres mucho más fuerte de lo que tu mente te dice en los días difíciles.",
-    "El descanso también es productivo. Date permiso para pausar y recuperar tu paz."
-  ];
+  // Estado para la Caja de Liberación Emocional
+  const [thoughtInput, setThoughtInput] = useState('');
+  const [releasedMessage, setReleasedMessage] = useState(null);
+
+  // Estado para la Técnica 5-4-3-2-1 Grounding Interactiva
+  const [groundingState, setGroundingState] = useState({
+    step5: false,
+    step4: false,
+    step3: false,
+    step2: false,
+    step1: false,
+  });
+
+  // Estado para la Biblioteca Emocional
+  const [activeFilter, setActiveFilter] = useState('Todos');
+  const [selectedArticle, setSelectedArticle] = useState(null);
 
   // Control del temporizador de respiración
   useEffect(() => {
@@ -31,7 +40,6 @@ export default function App() {
           if (prevCount > 1) {
             return prevCount - 1;
           } else {
-            // Cambio de fase
             if (breathPhase === 'inhale') {
               setBreathPhase('hold');
               return 4;
@@ -56,81 +64,217 @@ export default function App() {
     return () => clearInterval(interval);
   }, [isBreathingActive, breathPhase]);
 
+  // Ambientes del Espacio Emocional
+  const ambiances = {
+    selva: {
+      title: 'Selva Viva de Loreto',
+      desc: 'Siente la energía verde, la brisa amazónica y la sabiduría de la naturaleza que siempre renueva la vida tras cada tormenta.',
+      image: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=800&q=80',
+      affirmation: '«Como los grandes árboles de nuestra selva, tus raíces son más profundas y fuertes de lo que imaginas.»'
+    },
+    lluvia: {
+      title: 'Lluvia Sanadora en la Amazonía',
+      desc: 'El sonido y frescor del agua limpiando el follaje. Cierra tus ojos y permite que el cansancio se vaya con la corriente.',
+      image: 'https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=800&q=80',
+      affirmation: '«La lluvia no destruye el paisaje, lo nutre. Tus lágrimas también limpian tu corazón para volver a florecer.»'
+    },
+    rio: {
+      title: 'Río Amazonas al Atardecer',
+      desc: 'Las aguas tranquilas reflejando destellos violetas y rosados del cielo loretano. Respira con el compás de la marea suave.',
+      image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
+      affirmation: '«No tienes que forzar el rumbo de cada ola; suelta la necesidad de control y permite que la paz te encuentre.»'
+    },
+    noche: {
+      title: 'Cielo Estrellado y Silencio',
+      desc: 'La quietud de la noche sobre el río Itaya y Nanay. Un manto protector de estrellas donde el descanso es bienvenido.',
+      image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+      affirmation: '«Por más oscura que parezca la noche, el amanecer siempre llega. Tu mañana está esperándote.»'
+    }
+  };
+
+  // Artículos de la Biblioteca Emocional
+  const libraryArticles = [
+    {
+      id: 1,
+      category: 'Crisis',
+      title: 'Primeros auxilios ante una crisis de pánico o ansiedad',
+      desc: 'Aprende qué hacer cuando el corazón se acelera y sientes que pierdes el control. Una guía clara y compasiva.',
+      image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=800&q=80',
+      content: `Un ataque de pánico es una respuesta de alarma de tu cuerpo, pero NO es peligroso ni causará daño a tu salud. 
+      
+Pasos clave para atravesarlo:
+1. Recuerda: "Esto pasará. Mi cuerpo está asustado pero no estoy en peligro real."
+2. Siéntate y apoya los dos pies firmes sobre el suelo.
+3. Coloca una mano sobre tu pecho y otra sobre tu vientre. Inhala lentamente en 4 segundos y exhala en 6 segundos.
+4. Moja tus muñecas o el rostro con agua fría: activa el reflejo de relajación del nervio vago.
+5. No luches contra la sensación; déjala estar mientras sigues respirando. En pocos minutos la adrenalina descenderá por sí sola.`
+    },
+    {
+      id: 2,
+      category: 'Familia y Relaciones',
+      title: 'Cómo hablar con tus padres o amigos sobre lo que sientes',
+      desc: 'Guiones prácticos y consejos empáticos para romper el silencio y pedir apoyo sin sentir culpa ni vergüenza.',
+      image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80',
+      content: `A veces el miedo más grande de los adolescentes y jóvenes es: "¿Qué dirán si les digo que me siento mal?".
+
+Consejos para iniciar la conversación:
+• Elige un momento tranquilo, no en medio de una discusión o apuro.
+• Puedes empezar diciendo: "Mamá/Papá/Amigo, últimamente he estado cargando cosas difíciles en mi mente y no quiero seguir haciéndolo solo/a. Necesito que me escuches sin juzgarme".
+• Si te cuesta hablar en voz alta, escribe una carta breve o un mensaje de WhatsApp: "No sé cómo explicarlo bien, pero necesito apoyo psicológico y me gustaría contar contigo".
+• Pedir ayuda es una muestra de madurez y valentía que inspira respeto.`
+    },
+    {
+      id: 3,
+      category: 'Autoestima',
+      title: 'Superar el Síndrome del Impostor y la Autoexigencia',
+      desc: 'Deja de sentir que nunca eres "suficiente". Herramientas para abrazar tus virtudes y soltar la comparación en redes.',
+      image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80',
+      content: `Vivimos en una época donde comparamos nuestro detrás de escena con los momentos perfectos que otros muestran en redes sociales.
+
+Verdades para sanar tu autoestima:
+1. Tu valor humano es intrínseco: no depende de tus calificaciones, tu sueldo ni de cuántos seguidores tengas.
+2. Cometer errores o sentirse perdido es parte natural de la juventud y la adultez.
+3. Haz una lista de 3 cosas sencillas que lograste este año: levantarte tras un mal día cuenta como una gran victoria.
+4. Silencia cuentas o personas que te hagan dudar de tu valor.`
+    },
+    {
+      id: 4,
+      category: 'Familia y Relaciones',
+      title: 'Sanando un Corazón Roto: Duelo, Pérdida y Tristeza',
+      desc: 'Cómo transitar el dolor de una ruptura, la pérdida de un ser querido o una etapa que llega a su fin.',
+      image: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=800&q=80',
+      content: `El dolor emocional duele físicamente en el cuerpo. El duelo no tiene un calendario fijo ni reglas obligatorias.
+
+Pasos para acompañarte en el dolor:
+• Llorar es medicina natural: tus lágrimas eliminan toxinas y relajan el pecho.
+• No te obligues a "estar feliz": date permiso de sentir tristeza sin quedarte estancado en la culpa.
+• Rodéate de personas seguras que puedan estar en silencio a tu lado sin dar consejos vacíos.
+• Confía en que el tiempo y el amor propio poco a poco reconstruirán tu alegría.`
+    },
+    {
+      id: 5,
+      category: 'Ansiedad y Estrés',
+      title: 'Autocuidado Real para el Estrés Cotidiano y Burnout',
+      desc: 'Estrategias de descanso auténtico para jóvenes trabajadores, estudiantes y adultos con sobrecarga familiar.',
+      image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=800&q=80',
+      content: `El autocuidado no es solo mascarillas o compras; es aprender a poner límites firmes a lo que te roba la paz.
+
+Prácticas de autocuidado profundo:
+• Aprende a decir: "Hoy no puedo con esto, lo revisaré mañana".
+• Haz una pausa de 10 minutos sin pantallas al mediodía para sentir tu respiración.
+• Aliméntate e hidrátate con cariño: tu cuerpo es el hogar de tus emociones.
+• Delegar tareas en el trabajo o el hogar no te hace débil, te hace sabio.`
+    },
+    {
+      id: 6,
+      category: 'Autoestima',
+      title: 'Salud Emocional en la Adolescencia: Identidad y Presión',
+      desc: 'Descubre cómo transitar los cambios, el acoso escolar y la búsqueda de tu propio camino con seguridad.',
+      image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=800&q=80',
+      content: `La adolescencia es una montaña rusa de emociones y descubrimientos. 
+
+Claves para cuidarte:
+• No tienes que encajar con todo el mundo: los amigos verdaderos valoran quién eres sin fingir.
+• Si sufres acoso o bullying escolar, busca de inmediato a un adulto de confianza. No guardes silencio, mereces respeto.
+• Reconoce que las emociones intensas son temporales: lo que hoy parece el fin del mundo, mañana será una lección superada.`
+    }
+  ];
+
+  // Filtro de biblioteca
+  const filteredArticles = activeFilter === 'Todos'
+    ? libraryArticles
+    : libraryArticles.filter((art) => art.category === activeFilter);
+
+  // Manejar liberación de pensamientos
+  const handleReleaseThought = (e) => {
+    e.preventDefault();
+    if (!thoughtInput.trim()) return;
+
+    setReleasedMessage({
+      thought: thoughtInput,
+      message: '🕊️ Tu pensamiento ha sido liberado de tu mente. No tienes que cargarlo más. Respira profundo: este instante es nuevo y mereces serenidad.'
+    });
+    setThoughtInput('');
+  };
+
+  // Cálculo de progreso para técnica 5-4-3-2-1
+  const completedGroundingSteps = Object.values(groundingState).filter(Boolean).length;
+  const groundingPercentage = (completedGroundingSteps / 5) * 100;
+
+  const toggleGroundingStep = (step) => {
+    setGroundingState((prev) => ({
+      ...prev,
+      [step]: !prev[step]
+    }));
+  };
+
+  // Semáforo de emociones
   const moods = [
     {
       id: 'ansiedad',
       emoji: '⚡',
-      title: 'Ansiedad o Miedo',
-      description: 'Sientes opresión, pensamientos acelerados o inquietud.',
-      color: 'var(--amarillo-sol)',
-      advice: 'Tu sistema nervioso está en alerta, pero estás a salvo aquí y ahora. No creas todo lo que tu mente sobreanaliza en este instante.',
+      title: 'Ansiedad o Inquietud',
+      description: 'Sientes opresión, pensamientos acelerados o miedo.',
+      advice: 'Tu sistema nervioso está sobreactivado, pero estás a salvo aquí y ahora. No creas todo lo que tu mente imagina en este momento.',
       tips: [
-        { title: 'Técnica 5-4-3-2-1', text: 'Observa 5 cosas que veas, 4 que toques, 3 que oigas, 2 que huelas y 1 que saborees.' },
-        { title: 'Exhala más largo', text: 'Haz que la exhalación sea el doble de lenta que la inhalación para calmar el ritmo cardíaco.' },
-        { title: 'Pon los pies en la tierra', text: 'Camina descalzo unos minutos y siente el suelo firme sosteniéndote.' }
+        { title: 'Técnica 5-4-3-2-1', text: 'Usa nuestra actividad interactiva más abajo para anclar tus sentidos.' },
+        { title: 'Exhala largo', text: 'Haz que la exhalación sea el doble de lenta que la inhalación para regular tu ritmo cardíaco.' },
+        { title: 'Siente tus pies', text: 'Apoya los pies descalzos sobre el suelo y siente el sostén de la tierra.' }
       ]
     },
     {
       id: 'tristeza',
       emoji: '🌧️',
       title: 'Tristeza o Vacío',
-      description: 'Sientes ganas de llorar, desgano o pesadez.',
-      color: 'var(--violeta-suave)',
-      advice: 'La tristeza no es tu enemiga: es el corazón pidiendo suavidad, ternura y descanso. No te forces a fingir que todo está bien.',
+      description: 'Sientes desgano, ganas de llorar o pesadez en el pecho.',
+      advice: 'La tristeza no es tu enemiga: es el corazón pidiendo suavidad, ternura y descanso. No te forces a sonreír si no lo sientes.',
       tips: [
-        { title: 'Permítete sentir', text: 'Llorar libera hormonas del estrés; no reprimas tus lágrimas ni te juzgues.' },
-        { title: 'Una pequeña acción', text: 'Toma un vaso de agua fresca, abrigate y haz solo una cosa a la vez.' },
-        { title: 'Háblale a un amigo', text: 'Escribe un mensaje sencillo: "Hoy ha sido un día difícil, solo necesitaba recordarlo".' }
+        { title: 'Permítete sentir', text: 'Llorar libera endorfinas que alivian el dolor; no reprimas tus lágrimas.' },
+        { title: 'Un vaso de agua fresca', text: 'Toma agua despacio, abrígate y dale un respiro a tus hombros.' },
+        { title: 'Conexión humana', text: 'Escribe a un amigo o llama a la línea 113 opción 5 para conversar.' }
       ]
     },
     {
       id: 'abrumado',
       emoji: '🌪️',
-      title: 'Abrumado / Agotado',
+      title: 'Sobrecarga y Agotamiento',
       description: 'Demasiadas responsabilidades o problemas acumulados.',
-      color: 'var(--rosado-neon)',
-      advice: 'Tu mente está sobrecargada porque has estado intentando sostener el mundo entero tú solo/a. Mereces soltar un poco de control.',
+      advice: 'Tu mente está cansada porque has intentado sostenerlo todo a solas. Mereces soltar un poco de control.',
       tips: [
-        { title: 'La regla del 10%', text: '¿Qué es lo único del día que realmente no puede esperar? Haz solo eso y aplaza el resto.' },
-        { title: 'Pausa digital', text: 'Apaga las notificaciones durante los próximos 45 minutos.' },
-        { title: 'Aprende a decir No', text: 'Poner límites no es egoísmo, es supervivencia y respeto por tu salud mental.' }
+        { title: 'Elige solo 1 cosa', text: '¿Qué es lo único del día que de verdad importa? Hazlo y posterga el resto.' },
+        { title: 'Pausa de desconexión', text: 'Apaga pantallas 30 minutos y camina o escucha los sonidos de la naturaleza.' },
+        { title: 'Decir No es cuidarte', text: 'Poner límites saludables es un acto sagrado de amor propio.' }
       ]
     },
     {
       id: 'soledad',
       emoji: '🕯️',
-      title: 'Soledad o Incomprendido',
-      description: 'Sientes que nadie te entiende o estás aislado.',
-      color: 'var(--amarillo-luminoso)',
-      advice: 'A veces estar rodeado de gente no calma el vacío, pero recuerda: somos miles en Loreto buscando conexiones reales y auténticas como tú.',
+      title: 'Soledad o Incomprensión',
+      description: 'Sientes que nadie te entiende o que estás en aislamiento.',
+      advice: 'Estar entre personas a veces no quita la soledad, pero recuerda: en Loreto somos miles buscando conexiones cálidas y honestas.',
       tips: [
-        { title: 'Conecta con la naturaleza', text: 'Mira el cielo, los árboles de nuestra hermosa Amazonía y respira el aire verde.' },
-        { title: 'Escribe lo que sientes', text: 'Vierte en un papel todo sin filtro para que tu mente no cargue sola con el peso.' },
-        { title: 'Línea de escucha', text: 'Nuestra red y la línea 113 opción 5 están disponibles para escucharte con empatía.' }
+        { title: 'Escribe sin censura', text: 'Descarga en la caja de pensamientos todo lo que no te atreves a decir en voz alta.' },
+        { title: 'Mira el cielo', text: 'Recuerda que todos compartimos el mismo cielo loretano y nunca estamos completamente solos.' },
+        { title: 'Espacio Seguro', text: 'Nuestra comunidad y las líneas de ayuda siempre tienen oídos abiertos para ti.' }
       ]
     },
     {
       id: 'esperanza',
       emoji: '🌱',
       title: 'Buscando Sanar',
-      description: 'Deseas recuperar tu paz y construir hábitos sanos.',
-      color: 'var(--blanco)',
-      advice: '¡Qué gran paso! Reconocer que quieres sentirte mejor es la semilla más poderosa de la transformación. Vamos paso a paso.',
+      description: 'Deseas cultivar tu bienestar y hábitos saludables.',
+      advice: '¡Qué gran paso! Reconocer que quieres sentirte mejor es la semilla más hermosa de tu transformación.',
       tips: [
-        { title: 'Celebra tus victorias', text: 'Incluso levantarte de la cama en un mal día es un logro que merece orgullo.' },
-        { title: 'Crea tu ritual de calma', text: '5 minutos de silencio, música suave o una infusión caliente al anochecer.' },
-        { title: 'Sé paciente contigo', text: 'Sanar no es una línea recta: habrá días buenos y días lentos, y ambos están bien.' }
+        { title: 'Celebra tus avances', text: 'Cada día que decides levantarte y seguir adelante es un logro enorme.' },
+        { title: 'Explora la biblioteca', text: 'Lee nuestras guías de autocuidado para fortalecer tu mente.' },
+        { title: 'Sé compasivo contigo', text: 'Sanar tiene días altos y bajos; ambos son parte del viaje.' }
       ]
     }
   ];
 
-  const nextAffirmation = () => {
-    setAffirmationIndex((prev) => (prev + 1) % affirmations.length);
-  };
-
   return (
     <div className="app-container">
-      {/* Luces difusas de fondo */}
+      {/* Luces de fondo difusas en lila bajo, rosado y violeta */}
       <div className="bg-glow-orb orb-1"></div>
       <div className="bg-glow-orb orb-2"></div>
       <div className="bg-glow-orb orb-3"></div>
@@ -144,10 +288,10 @@ export default function App() {
         <nav>
           <ul className="nav-links">
             <li><a href="#inicio">Inicio</a></li>
-            <li><a href="#como-te-sientes">¿Cómo te sientes?</a></li>
-            <li><a href="#respiracion">Calma</a></li>
-            <li><a href="#etapas">Etapas de Vida</a></li>
-            <li><a href="#mitos">Mitos</a></li>
+            <li><a href="#espacio-emocional">Espacio Emocional</a></li>
+            <li><a href="#actividades">Actividades</a></li>
+            <li><a href="#biblioteca">Biblioteca</a></li>
+            <li><a href="#etapas">Etapas</a></li>
             <li><a href="#ayuda">Ayuda Gratuita</a></li>
           </ul>
         </nav>
@@ -160,7 +304,7 @@ export default function App() {
       <main id="inicio" className="hero-section">
         <div className="hero-pill-badge">
           <span className="sparkle-icon">✨</span>
-          <span>Espacio Seguro · Loreto Unido por tu Bienestar</span>
+          <span>Espacio Seguro · Loreto Unido por tu Bienestar Emocional</span>
         </div>
 
         {/* TITULO REQUERIDO */}
@@ -173,99 +317,247 @@ export default function App() {
           salud mental y emocional entre los jovenes , aolescentes y adultos
         </p>
 
-        {/* FRASE MOTIVADORA DESTACADA */}
-        <section className="motivational-card">
-          <div className="quote-badge">
-            <span>💛</span> Mensaje para tu corazón
+        {/* BANNER VISUAL CON IMAGEN TEMATICA Y FRASE MOTIVADORA */}
+        <div className="hero-banner-visual">
+          <div className="hero-img-wrap">
+            <img 
+              src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=800&q=80" 
+              alt="Luz y naturaleza serena en la Amazonía de Loreto" 
+            />
+            <div className="hero-img-badge">
+              🌿 Paz y resiliencia en el corazón de Loreto
+            </div>
           </div>
-          <blockquote className="motivational-quote">
-            «No tienes que luchar en silencio ni cargar con todo a solas. 
-            <mark>Tu dolor es real, pero tu historia no termina aquí.</mark> 
-            Cuidar de tu mente y abrazar tus emociones es el acto de valentía más hermoso que existe: 
-            <strong> sanar sí es posible y jamás estarás solo/a en este camino.</strong>»
-          </blockquote>
-          <div className="motivational-author">
-            <span>🌿</span>
-            <span>Un abrazo cálido desde Loreto para tu bienestar emocional</span>
-          </div>
-        </section>
+
+          {/* TARJETA DE FRASE MOTIVADORA */}
+          <section className="motivational-card">
+            <div className="quote-badge">
+              <span>💜</span> Mensaje para tu corazón
+            </div>
+            <blockquote className="motivational-quote">
+              «No tienes que luchar en silencio ni cargar con todo a solas. 
+              <mark>Tu dolor es real, pero tu historia no termina aquí.</mark> 
+              Cuidar de tu mente y abrazar tus emociones es el acto de valentía más hermoso que existe: 
+              <strong> sanar sí es posible y jamás estarás solo/a en este camino.</strong>»
+            </blockquote>
+            <div className="motivational-author">
+              <span>🌸</span>
+              <span>Un abrazo cálido desde Loreto para tu bienestar emocional</span>
+            </div>
+          </section>
+        </div>
 
         {/* BOTONES DE LLAMADO A LA ACCIÓN */}
         <div className="hero-cta-group">
-          <a href="#como-te-sientes" className="btn-primary">
-            <span>💬</span> ¿Cómo te sientes hoy?
+          <a href="#espacio-emocional" className="btn-primary">
+            <span>🌿</span> Entrar al Espacio Emocional
           </a>
-          <a href="#respiracion" className="btn-secondary">
-            <span>🧘</span> Ejercicio de Respiración
+          <a href="#actividades" className="btn-secondary">
+            <span>✨</span> Actividades Interactivas
           </a>
-          <a href="#ayuda" className="btn-pink">
-            <span>🤝</span> Encontrar Ayuda Ahora
+          <a href="#biblioteca" className="btn-pink">
+            <span>📚</span> Biblioteca Emocional
           </a>
         </div>
       </main>
 
-      {/* SECCIÓN INTERACTIVA: ¿CÓMO TE SIENTES HOY? */}
-      <section id="como-te-sientes" className="content-section">
+      {/* SECCIÓN 1: ESPACIO EMOCIONAL (AMBIENTES Y DESCARGA) */}
+      <section id="espacio-emocional" className="content-section">
         <div className="section-header">
-          <span className="section-tag">Semáforo Emocional</span>
-          <h2 className="section-title">¿Qué emoción estás sintiendo en este momento?</h2>
+          <span className="section-tag">Rincón de Paz y Conexión</span>
+          <h2 className="section-title">Tu Espacio Emocional</h2>
           <p className="section-description">
-            Toca una de las tarjetas para recibir un mensaje de aliento y herramientas inmediatas para calmar tu mente.
+            Un refugio visual y consciente donde puedes detenerte, contemplar la belleza de nuestra tierra 
+            y soltar las cargas que no te pertenecen.
           </p>
         </div>
 
-        <div className="mood-grid">
-          {moods.map((m) => (
-            <button
-              key={m.id}
-              className={`mood-card ${selectedMood?.id === m.id ? 'active' : ''}`}
-              onClick={() => setSelectedMood(m)}
+        {/* SELECTOR DE AMBIENTES DE CALMA */}
+        <div className="emotional-space-card">
+          <div className="ambiance-selector">
+            <button 
+              className={`ambiance-btn ${activeAmbiance === 'selva' ? 'active' : ''}`}
+              onClick={() => setActiveAmbiance('selva')}
             >
-              <span className="mood-emoji">{m.emoji}</span>
-              <h3 className="mood-title">{m.title}</h3>
-              <p className="mood-desc">{m.description}</p>
+              🌿 Selva Viva
             </button>
-          ))}
-        </div>
+            <button 
+              className={`ambiance-btn ${activeAmbiance === 'lluvia' ? 'active' : ''}`}
+              onClick={() => setActiveAmbiance('lluvia')}
+            >
+              🌧️ Lluvia Sanadora
+            </button>
+            <button 
+              className={`ambiance-btn ${activeAmbiance === 'rio' ? 'active' : ''}`}
+              onClick={() => setActiveAmbiance('rio')}
+            >
+              🌊 Río al Atardecer
+            </button>
+            <button 
+              className={`ambiance-btn ${activeAmbiance === 'noche' ? 'active' : ''}`}
+              onClick={() => setActiveAmbiance('noche')}
+            >
+              🌌 Cielo Estrellado
+            </button>
+          </div>
 
-        {/* RESPUESTA PERSONALIZADA DE APOYO */}
-        {selectedMood && (
-          <div className="mood-response-box">
-            <div className="mood-response-header">
-              <span className="mood-response-badge">Apoyo Inmediato</span>
-              <h3 className="mood-response-title">
-                {selectedMood.emoji} {selectedMood.title}: Estamos contigo
-              </h3>
+          <div className="ambiance-display">
+            <div className="ambiance-image-box">
+              <img 
+                src={ambiances[activeAmbiance].image} 
+                alt={ambiances[activeAmbiance].title} 
+              />
             </div>
-            <p className="mood-response-message">{selectedMood.advice}</p>
-
-            <h4 style={{ color: 'var(--amarillo-sol)', fontSize: '1.15rem', marginBottom: '0.75rem' }}>
-              💡 3 pequeños pasos que puedes dar ahora mismo:
-            </h4>
-            <div className="mood-tips-list">
-              {selectedMood.tips.map((tip, idx) => (
-                <div key={idx} className="mood-tip-item">
-                  <strong>{tip.title}</strong>
-                  <span>{tip.text}</span>
-                </div>
-              ))}
+            <div className="ambiance-text-box">
+              <h3 className="ambiance-title">{ambiances[activeAmbiance].title}</h3>
+              <p className="ambiance-desc">{ambiances[activeAmbiance].desc}</p>
+              <div className="ambiance-affirmation">
+                {ambiances[activeAmbiance].affirmation}
+              </div>
             </div>
           </div>
-        )}
+        </div>
+
+        {/* ACTIVIDAD INTERACTIVA: CAJA DE LIBERACIÓN DE PENSAMIENTOS */}
+        <div className="thought-release-section">
+          <span className="section-tag">Actividad de Desahogo</span>
+          <h3 className="section-title" style={{ fontSize: '2.1rem' }}>
+            Caja de Liberación Emocional
+          </h3>
+          <p className="section-description" style={{ color: 'var(--texto-secundario)' }}>
+            Escribe aquí el pensamiento intrusivo, la culpa, el miedo o el dolor que te está pesando hoy. 
+            Al presionar el botón, lo dejarás ir.
+          </p>
+
+          <form onSubmit={handleReleaseThought}>
+            <textarea
+              className="thought-textarea"
+              placeholder="Ejemplo: 'Siento mucha presión con mis estudios/trabajo y tengo miedo de defraudar a mi familia...'"
+              value={thoughtInput}
+              onChange={(e) => setThoughtInput(e.target.value)}
+            />
+            <button type="submit" className="btn-primary">
+              <span>🕊️</span> Soltar y Liberar este Pensamiento
+            </button>
+          </form>
+
+          {releasedMessage && (
+            <div className="thought-released-box">
+              <p style={{ color: 'var(--lila-suave)', fontStyle: 'italic', marginBottom: '0.75rem' }}>
+                «{releasedMessage.thought}»
+              </p>
+              <p style={{ color: 'var(--blanco)', fontSize: '1.15rem', fontWeight: 600 }}>
+                {releasedMessage.message}
+              </p>
+              <button 
+                onClick={() => setReleasedMessage(null)} 
+                className="btn-secondary" 
+                style={{ marginTop: '1rem', padding: '0.5rem 1.25rem', fontSize: '0.9rem' }}
+              >
+                Cerrar y continuar
+              </button>
+            </div>
+          )}
+        </div>
       </section>
 
-      {/* SECCIÓN DE RESPIRACIÓN Y CALMA */}
-      <section id="respiracion" className="content-section">
+      {/* SECCIÓN 2: ACTIVIDADES INTERACTIVAS */}
+      <section id="actividades" className="content-section">
         <div className="section-header">
-          <span className="section-tag">Pausa Activa</span>
-          <h2 className="section-title">Espacio de Calma y Respiración</h2>
+          <span className="section-tag">Herramientas Prácticas</span>
+          <h2 className="section-title">Actividades Interactivas para tu Bienestar</h2>
           <p className="section-description">
-            Si sientes que tu pecho está apretado o tu mente no para, sigue el ritmo de la esfera. 
-            Inhala, sostén y exhala profundamente.
+            Dinámicas guiadas paso a paso para ayudarte a regular la ansiedad, calmar la mente y conectar con el presente.
           </p>
         </div>
 
+        {/* ACTIVIDAD 1: CONEXIÓN A TIERRA 5-4-3-2-1 */}
+        <div className="grounding-activity-card">
+          <div style={{ textAlign: 'center' }}>
+            <span className="section-tag">Técnica Sensorial Antiansiedad</span>
+            <h3 className="section-title" style={{ fontSize: '2.2rem' }}>
+              Método de Anclaje 5-4-3-2-1
+            </h3>
+            <p className="section-description">
+              Toca cada casilla a medida que encuentres los elementos a tu alrededor. 
+              Esto desactiva la alarma de tu cerebro y te trae de vuelta a la calma.
+            </p>
+          </div>
+
+          {/* Barra de progreso */}
+          <div className="grounding-progress-wrap">
+            <div 
+              className="grounding-progress-bar" 
+              style={{ width: `${groundingPercentage}%` }}
+            ></div>
+          </div>
+          <p style={{ textAlign: 'center', color: 'var(--lila-suave)', fontWeight: 700, marginBottom: '2rem' }}>
+            Progreso: {completedGroundingSteps} de 5 pasos completados {completedGroundingSteps === 5 && '🎉 ¡Excelente! Siente la calma en tu cuerpo.'}
+          </p>
+
+          <div className="grounding-steps-grid">
+            <div 
+              className={`grounding-step-box ${groundingState.step5 ? 'checked' : ''}`}
+              onClick={() => toggleGroundingStep('step5')}
+            >
+              <span className="grounding-step-num">5</span>
+              <span className="grounding-step-title">👀 Mira</span>
+              <span className="grounding-step-desc">5 cosas que puedas ver a tu alrededor</span>
+              <span style={{ fontSize: '1.2rem', marginTop: '0.4rem' }}>{groundingState.step5 ? '✅ Hecho' : '⚪ Tocar aquí'}</span>
+            </div>
+
+            <div 
+              className={`grounding-step-box ${groundingState.step4 ? 'checked' : ''}`}
+              onClick={() => toggleGroundingStep('step4')}
+            >
+              <span className="grounding-step-num">4</span>
+              <span className="grounding-step-title">✋ Toca</span>
+              <span className="grounding-step-desc">4 texturas o cosas que puedas sentir</span>
+              <span style={{ fontSize: '1.2rem', marginTop: '0.4rem' }}>{groundingState.step4 ? '✅ Hecho' : '⚪ Tocar aquí'}</span>
+            </div>
+
+            <div 
+              className={`grounding-step-box ${groundingState.step3 ? 'checked' : ''}`}
+              onClick={() => toggleGroundingStep('step3')}
+            >
+              <span className="grounding-step-num">3</span>
+              <span className="grounding-step-title">👂 Escucha</span>
+              <span className="grounding-step-desc">3 sonidos distintos en tu entorno</span>
+              <span style={{ fontSize: '1.2rem', marginTop: '0.4rem' }}>{groundingState.step3 ? '✅ Hecho' : '⚪ Tocar aquí'}</span>
+            </div>
+
+            <div 
+              className={`grounding-step-box ${groundingState.step2 ? 'checked' : ''}`}
+              onClick={() => toggleGroundingStep('step2')}
+            >
+              <span className="grounding-step-num">2</span>
+              <span className="grounding-step-title">👃 Huele</span>
+              <span className="grounding-step-desc">2 olores que puedas percibir</span>
+              <span style={{ fontSize: '1.2rem', marginTop: '0.4rem' }}>{groundingState.step2 ? '✅ Hecho' : '⚪ Tocar aquí'}</span>
+            </div>
+
+            <div 
+              className={`grounding-step-box ${groundingState.step1 ? 'checked' : ''}`}
+              onClick={() => toggleGroundingStep('step1')}
+            >
+              <span className="grounding-step-num">1</span>
+              <span className="grounding-step-title">👅 Saborea</span>
+              <span className="grounding-step-desc">1 sabor o bebe un sorbo de agua fresca</span>
+              <span style={{ fontSize: '1.2rem', marginTop: '0.4rem' }}>{groundingState.step1 ? '✅ Hecho' : '⚪ Tocar aquí'}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* ACTIVIDAD 2: RESPIRACIÓN GUIADA */}
         <div className="breathing-container">
+          <span className="section-tag">Respiración Cuadrada 4-4-4</span>
+          <h3 className="section-title" style={{ fontSize: '2.2rem' }}>
+            Respiración Guiada Consciente
+          </h3>
+          <p className="section-description">
+            Sigue la expansión de la esfera. Inhala, sostén y exhala para enviar una señal biológica de seguridad a tu corazón.
+          </p>
+
           <div className={`breathing-visual-wrap breathe-${breathPhase}`}>
             <div className="breathing-circle-outer"></div>
             <div className="breathing-circle-glow"></div>
@@ -282,8 +574,8 @@ export default function App() {
 
           <p style={{ color: 'var(--texto-secundario)', fontSize: '1.1rem', marginBottom: '1.5rem' }}>
             {isBreathingActive 
-              ? `Ciclos completados: ${cyclesCompleted} · Sigue sintiendo el aire entrar y salir.` 
-              : 'Presiona Iniciar para comenzar 1 minuto de respiración consciente.'}
+              ? `Ciclos completados: ${cyclesCompleted} · Sigue sintiendo el aire entrar y salir suavemente.` 
+              : 'Presiona Iniciar para sincronizar tu respiración.'}
           </p>
 
           <div className="breathing-controls">
@@ -306,16 +598,145 @@ export default function App() {
             )}
           </div>
         </div>
+
+        {/* ACTIVIDAD 3: SEMÁFORO EMOCIONAL */}
+        <div style={{ marginTop: '4rem' }}>
+          <div className="section-header">
+            <span className="section-tag">Autochequeo Diario</span>
+            <h3 className="section-title" style={{ fontSize: '2.2rem' }}>
+              ¿Qué emoción predomina en ti hoy?
+            </h3>
+            <p className="section-description">
+              Reconocer lo que sientes es el primer acto de amor propio. Selecciona una tarjeta para recibir orientación inmediata.
+            </p>
+          </div>
+
+          <div className="mood-grid">
+            {moods.map((m) => (
+              <button
+                key={m.id}
+                className={`mood-card ${selectedMood?.id === m.id ? 'active' : ''}`}
+                onClick={() => setSelectedMood(m)}
+              >
+                <span className="mood-emoji">{m.emoji}</span>
+                <h4 className="mood-title">{m.title}</h4>
+                <p className="mood-desc">{m.description}</p>
+              </button>
+            ))}
+          </div>
+
+          {selectedMood && (
+            <div className="mood-response-box">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                <span className="mood-response-badge">Orientación Inmediata</span>
+                <h4 className="mood-response-title">
+                  {selectedMood.emoji} {selectedMood.title}: Estamos contigo
+                </h4>
+              </div>
+              <p className="mood-response-message">{selectedMood.advice}</p>
+
+              <h5 style={{ color: 'var(--lila-luminoso)', fontSize: '1.15rem', marginBottom: '0.75rem' }}>
+                💡 3 pequeños pasos para reconfortarte ahora:
+              </h5>
+              <div className="mood-tips-list">
+                {selectedMood.tips.map((tip, idx) => (
+                  <div key={idx} className="mood-tip-item">
+                    <strong>{tip.title}</strong>
+                    <span>{tip.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </section>
 
-      {/* PILARES POR ETAPAS: JOVENES, ADOLESCENTES Y ADULTOS */}
+      {/* SECCIÓN 3: BIBLIOTECA EMOCIONAL */}
+      <section id="biblioteca" className="content-section">
+        <div className="section-header">
+          <span className="section-tag">Conocimiento para Sanar</span>
+          <h2 className="section-title">Biblioteca Emocional</h2>
+          <p className="section-description">
+            Guías, artículos prácticos y lecturas comprensivas redactadas para jóvenes, adolescentes y adultos. 
+            Información que acompaña, alivia y da herramientas para la vida diaria.
+          </p>
+        </div>
+
+        {/* Filtros de la biblioteca */}
+        <div className="library-filter-tabs">
+          {['Todos', 'Crisis', 'Ansiedad y Estrés', 'Autoestima', 'Familia y Relaciones'].map((tab) => (
+            <button
+              key={tab}
+              className={`filter-tab ${activeFilter === tab ? 'active' : ''}`}
+              onClick={() => setActiveFilter(tab)}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        {/* Cuadrícula de artículos con imágenes */}
+        <div className="library-grid">
+          {filteredArticles.map((article) => (
+            <article key={article.id} className="library-card">
+              <div className="library-card-img-wrap">
+                <img src={article.image} alt={article.title} />
+                <span className="library-category-tag">{article.category}</span>
+              </div>
+              <div className="library-card-body">
+                <h3 className="library-card-title">{article.title}</h3>
+                <p className="library-card-desc">{article.desc}</p>
+                <button 
+                  onClick={() => setSelectedArticle(article)} 
+                  className="library-read-btn"
+                >
+                  <span>📖</span> Leer Guía Completa
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* MODAL DE LECTURA DE ARTÍCULO */}
+      {selectedArticle && (
+        <div className="modal-overlay" onClick={() => setSelectedArticle(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button 
+              className="modal-close-btn" 
+              onClick={() => setSelectedArticle(null)}
+              aria-label="Cerrar lectura"
+            >
+              ✕
+            </button>
+            <span className="section-tag">{selectedArticle.category}</span>
+            <h2 style={{ fontSize: '1.9rem', color: 'var(--blanco)', margin: '0.8rem 0 1.25rem' }}>
+              {selectedArticle.title}
+            </h2>
+            <img 
+              src={selectedArticle.image} 
+              alt={selectedArticle.title} 
+              style={{ width: '100%', height: '220px', objectFit: 'cover', borderRadius: '18px', marginBottom: '1.5rem' }}
+            />
+            <div style={{ whiteSpace: 'pre-line', fontSize: '1.08rem', lineHeight: '1.7', color: 'var(--texto-secundario)' }}>
+              {selectedArticle.content}
+            </div>
+            <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+              <button onClick={() => setSelectedArticle(null)} className="btn-primary">
+                Entendido y Guardar en mi Corazón 💜
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SECCIÓN 4: ETAPAS DE VIDA (JOVENES, ADOLESCENTES Y ADULTOS) */}
       <section id="etapas" className="content-section">
         <div className="section-header">
-          <span className="section-tag">Acompañamiento por Etapas</span>
-          <h2 className="section-title">Apoyo para Cada Momento de tu Vida</h2>
+          <span className="section-tag">Acompañamiento a tu Medida</span>
+          <h2 className="section-title">Apoyo para Cada Etapa de tu Vida</h2>
           <p className="section-description">
-            En Loreto comprendemos que los desafíos emocionales se viven distinto a cualquier edad. 
-            Aquí encuentras empatía adaptada a tu realidad.
+            En Loreto comprendemos que cada edad enfrenta sus propios desafíos. Aquí encuentras empatía adaptada a tu realidad.
           </p>
         </div>
 
@@ -335,7 +756,7 @@ export default function App() {
               <li>Acoso escolar (bullying) y comunicación con la familia.</li>
             </ul>
             <div className="pillar-quote-box">
-              «No eres "demasiado dramático/a". Lo que sientes es importante, real y merece ser escuchado.»
+              «No eres "demasiado dramático/a". Lo que sientes es importante, real y merece ser escuchado con respeto.»
             </div>
           </article>
 
@@ -351,10 +772,10 @@ export default function App() {
               <li>Incertidumbre laboral, universitaria y vocacional.</li>
               <li>Síndrome del impostor y compararse con los demás.</li>
               <li>Relaciones de pareja, rupturas y duelos afectivos.</li>
-              <li>Emancipación, independencia y manejo del estrés financiero.</li>
+              <li>Emancipación, independencia y manejo del estrés económico.</li>
             </ul>
             <div className="pillar-quote-box">
-              «Tu valor como persona no depende de la velocidad con la que alcances tus metas. Respira.»
+              «Tu valor como persona no depende de la velocidad con la que alcances tus metas. Date permiso de respirar.»
             </div>
           </article>
 
@@ -373,76 +794,22 @@ export default function App() {
               <li>Reencontrarse consigo mismo más allá de las obligaciones.</li>
             </ul>
             <div className="pillar-quote-box">
-              «No puedes servir de un vaso vacío. Cuidar de tu salud mental es el mayor acto de amor para los tuyos.»
+              «No puedes servir de un vaso vacío. Cuidar de tu propia mente es el mayor regalo de amor para los tuyos.»
             </div>
           </article>
         </div>
       </section>
 
-      {/* MITOS VS REALIDADES */}
-      <section id="mitos" className="content-section">
-        <div className="section-header">
-          <span className="section-tag">Derribando Tabúes</span>
-          <h2 className="section-title">Hablemos de Salud Mental sin Miedos</h2>
-          <p className="section-description">
-            En muchas familias de nuestra región aún existe vergüenza de hablar sobre emociones. 
-            Rompamos los mitos juntos.
-          </p>
-        </div>
-
-        <div className="myths-grid">
-          <div className="myth-card">
-            <span className="myth-tag">❌ MITO POPULAR</span>
-            <p className="myth-text">"Ir al psicólogo o pedir ayuda es solo para locos o débiles."</p>
-            <span className="reality-tag">✅ LA REALIDAD</span>
-            <p className="reality-text">
-              Buscar ayuda es para las personas más valientes: aquellas que deciden no rendirse y aprender herramientas para ser felices.
-            </p>
-          </div>
-
-          <div className="myth-card">
-            <span className="myth-tag">❌ MITO POPULAR</span>
-            <p className="myth-text">"Si le pones ganas y fuerza de voluntad, la depresión se pasa sola."</p>
-            <span className="reality-tag">✅ LA REALIDAD</span>
-            <p className="reality-text">
-              Así como no le pedirías a alguien con fractura que corra, la salud mental requiere empatía, tiempo y acompañamiento profesional.
-            </p>
-          </div>
-
-          <div className="myth-card">
-            <span className="myth-tag">❌ MITO POPULAR</span>
-            <p className="myth-text">"Los adolescentes solo quieren llamar la atención cuando dicen que están tristes."</p>
-            <span className="reality-tag">✅ LA REALIDAD</span>
-            <p className="reality-text">
-              Toda señal de dolor es un llamado genuino a la conexión. Escuchar a tiempo salva vidas y fortalece la confianza familiar.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* PÍLDORA DE AFIRMACIÓN DIARIA */}
-      <section className="content-section" style={{ textAlign: 'center', paddingTop: '1rem' }}>
-        <div className="motivational-card" style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <span className="quote-badge">☀️ Afirmación de Fuerza</span>
-          <p className="motivational-quote" style={{ fontSize: '1.4rem' }}>
-            "{affirmations[affirmationIndex]}"
-          </p>
-          <button onClick={nextAffirmation} className="btn-primary" style={{ marginTop: '1rem' }}>
-            🔄 Leer otra frase motivadora
-          </button>
-        </div>
-      </section>
-
-      {/* SECCIÓN DE AYUDA Y LINEAS DE APOYO */}
+      {/* SECCIÓN 5: LÍNEAS DE AYUDA Y CONTACTO */}
       <section id="ayuda" className="content-section">
         <div className="help-section-card">
-          <span className="section-tag" style={{ background: 'rgba(255,255,255,0.2)', color: 'var(--blanco)' }}>
-            Líneas de Atención Gratuita
+          <span className="section-tag" style={{ background: 'rgba(216, 180, 254, 0.25)', color: 'var(--blanco)' }}>
+            Líneas de Atención Gratuita y Confidencial
           </span>
           <h2 className="section-title" style={{ color: 'var(--blanco)' }}>
             Nunca estás solo/a en Loreto: Estamos para ayudarte
           </h2>
-          <p className="section-description" style={{ color: 'var(--amarillo-luminoso)' }}>
+          <p className="section-description" style={{ color: 'var(--lila-luminoso)' }}>
             Si tú o alguien que conoces está atravesando una crisis emocional, comunícate de manera gratuita, confidencial y sin costo alguno.
           </p>
 
@@ -470,12 +837,12 @@ export default function App() {
               <span className="help-channel-number">Línea 100</span>
               <span className="help-channel-name">Atención en Crisis y Violencia</span>
               <span className="help-channel-desc">
-                Servicio telefónico confidencial del Ministerio de la Mujer y Poblaciones Vulnerables para apoyo emocional y contención urgente.
+                Servicio telefónico confidencial del Ministerio de la Mujer y Poblaciones Vulnerables para contención emocional urgente.
               </span>
             </div>
           </div>
 
-          <div style={{ marginTop: '2rem' }}>
+          <div style={{ marginTop: '2.5rem' }}>
             <a 
               href="https://api.whatsapp.com/send?text=Hola,%20necesito%20orientaci%C3%B3n%20y%20apoyo%20emocional%20con%20Emoci%C3%B3n%20Sana%20Loreto" 
               target="_blank" 
@@ -497,7 +864,7 @@ export default function App() {
           </div>
           <p className="footer-quote">
             «Como los ríos de nuestra Amazonía que siempre encuentran su curso hacia el mar, 
-            tu vida también encontrará calma y luz. Florecer a tu ritmo es el camino.»
+            tu vida también encontrará calma y luz. Florecer a tu propio ritmo es el camino.»
           </p>
           <p className="footer-copy">
             © {new Date().getFullYear()} Emoción Sana Loreto · Promoviendo la salud mental y emocional entre jóvenes, adolescentes y adultos.

@@ -2,37 +2,43 @@
   --font-heading: 'Outfit', sans-serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
 
-  /* Paleta requerida: Morado, Violeta, Rosado, Amarillo */
-  --morado-oscuro: #16042b;
-  --morado-profundo: #2a0845;
-  --morado-vibrante: #6b21a8;
+  /* Paleta solicitada: Morado, Violeta, Rosado y Lila Bajo (CERO AMARILLO) */
+  --morado-oscuro: #140326;
+  --morado-profundo: #22063d;
+  --morado-vibrante: #581c87;
+  --morado-noche: #0f021f;
   
-  --violeta-neon: #a855f7;
+  --violeta-neon: #9333ea;
   --violeta-electrico: #8b5cf6;
-  --violeta-suave: #c084fc;
-  --violeta-glow: rgba(168, 85, 247, 0.4);
+  --violeta-intenso: #7c3aed;
+  --violeta-glow: rgba(147, 51, 234, 0.4);
 
   --rosado-neon: #ec4899;
   --rosado-vibrante: #f43f5e;
+  --rosado-fucsia: #db2777;
+  --rosado-suave: #f472b6;
   --rosado-pastel: #fbcfe8;
   --rosado-glow: rgba(236, 72, 153, 0.4);
 
-  --amarillo-sol: #facc15;
-  --amarillo-dorado: #eab308;
-  --amarillo-luminoso: #fef08a;
-  --amarillo-glow: rgba(250, 204, 21, 0.4);
+  /* Tonos de Lila Bajo y Lavanda para reemplazar el amarillo */
+  --lila-bajo: #e9d5ff;
+  --lila-suave: #d8b4fe;
+  --lila-luminoso: #f3e8ff;
+  --lila-pastel: #ede9fe;
+  --lila-glow: rgba(216, 180, 254, 0.5);
 
   --blanco: #ffffff;
-  --texto-principal: #fdf2f8;
-  --texto-secundario: #e9d5ff;
+  --texto-principal: #ffffff;
+  --texto-secundario: #f5d0fe;
+  --texto-lila: #e9d5ff;
   --texto-apagado: #c4b5fd;
 
-  --card-bg: rgba(35, 10, 60, 0.72);
-  --card-border: rgba(236, 72, 153, 0.3);
-  --card-hover-border: rgba(250, 204, 21, 0.7);
+  --card-bg: rgba(34, 6, 61, 0.78);
+  --card-border: rgba(216, 180, 254, 0.3);
+  --card-hover-border: rgba(236, 72, 153, 0.7);
 
-  --shadow-lg: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 25px rgba(168, 85, 247, 0.25);
-  --shadow-neon: 0 0 20px rgba(236, 72, 153, 0.4), 0 0 40px rgba(168, 85, 247, 0.2);
+  --shadow-lg: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(216, 180, 254, 0.25);
+  --shadow-neon: 0 0 20px rgba(236, 72, 153, 0.4), 0 0 40px rgba(139, 92, 246, 0.3);
 }
 
 * {
@@ -53,11 +59,11 @@ body {
   overflow-x: hidden;
   background: 
     radial-gradient(circle at 15% 15%, rgba(139, 92, 246, 0.35) 0%, transparent 40%),
-    radial-gradient(circle at 85% 20%, rgba(236, 72, 153, 0.3) 0%, transparent 40%),
-    radial-gradient(circle at 50% 60%, rgba(107, 33, 168, 0.28) 0%, transparent 50%),
-    radial-gradient(circle at 80% 85%, rgba(250, 204, 21, 0.2) 0%, transparent 35%),
-    radial-gradient(circle at 20% 90%, rgba(236, 72, 153, 0.25) 0%, transparent 40%),
-    linear-gradient(180deg, #120324 0%, #1e0638 50%, #10021d 100%);
+    radial-gradient(circle at 85% 20%, rgba(236, 72, 153, 0.32) 0%, transparent 42%),
+    radial-gradient(circle at 50% 60%, rgba(88, 28, 135, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 85%, rgba(216, 180, 254, 0.25) 0%, transparent 35%),
+    radial-gradient(circle at 20% 90%, rgba(244, 63, 94, 0.22) 0%, transparent 40%),
+    linear-gradient(180deg, #10021f 0%, #1c0533 50%, #0d011a 100%);
   background-attachment: fixed;
 }
 
@@ -88,17 +94,17 @@ a {
   transition: color 0.2s ease;
 }
 
-/* Custom scrollbar in yellow, pink and violet */
+/* Scrollbar en lila bajo, rosado y violeta */
 ::-webkit-scrollbar {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #140426;
+  background: #10021f;
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--amarillo-sol), var(--rosado-neon), var(--violeta-neon));
+  background: linear-gradient(180deg, var(--lila-bajo), var(--rosado-neon), var(--violeta-neon));
   border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--amarillo-luminoso), var(--rosado-vibrante), var(--violeta-electrico));
+  background: linear-gradient(180deg, var(--lila-luminoso), var(--rosado-vibrante), var(--violeta-intenso));
 }
