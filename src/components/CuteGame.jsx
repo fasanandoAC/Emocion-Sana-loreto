@@ -1,9 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  playClickSound, 
+  playPopSound, 
+  playCardFlipSound, 
+  playSuccessSound, 
+  playCatchSound 
+} from '../utils/audio';
 
 export default function CuteGame() {
-  const [activeGame, setActiveGame] = useState('memory'); // 'memory' o 'bubbles'
+  const [activeGame, setActiveGame] = useState('memory'); // 'memory', 'bubbles', 'bunny', 'wheel'
 
-  // ================= MEMORY MATCH GAME =================
+  // ================= 1. JUEGO DE MEMORIA =================
   const cardIcons = [
     { id: 1, icon: '🐰', label: 'Conejito Zen' },
     { id: 2, icon: '🧠✨', label: 'Cerebrito Feliz' },
@@ -13,7 +20,6 @@ export default function CuteGame() {
     { id: 6, icon: '⭐', label: 'Estrella de Esperanza' },
   ];
 
-  // Crear 12 cartas duplicadas y mezcladas
   const initializeCards = () => {
     const duplicated = [...cardIcons, ...cardIcons].map((item, index) => ({
       uniqueId: index,
@@ -33,11 +39,11 @@ export default function CuteGame() {
   const [hasWon, setHasWon] = useState(false);
 
   const handleCardClick = (index) => {
-    // Evitar voltear si ya hay 2 volteadas o si ya está volteada/emparejada
     if (flippedIndices.length === 2 || cards[index].isFlipped || cards[index].isMatched) {
       return;
     }
 
+    playCardFlipSound();
     const newCards = [...cards];
     newCards[index].isFlipped = true;
     setCards(newCards);
@@ -46,11 +52,12 @@ export default function CuteGame() {
     setFlippedIndices(newFlipped);
 
     if (newFlipped.length === 2) {
-      setMoves(moves + 1);
+      setMoves(m => m + 1);
       const [firstIdx, secondIdx] = newFlipped;
 
       if (cards[firstIdx].iconId === cards[secondIdx].iconId) {
-        // Coincidencia!
+        // Coincidencia exitosa
+        playSuccessSound();
         setTimeout(() => {
           newCards[firstIdx].isMatched = true;
           newCards[secondIdx].isMatched = true;
@@ -71,12 +78,13 @@ export default function CuteGame() {
           newCards[secondIdx].isFlipped = false;
           setCards(newCards);
           setFlippedIndices([]);
-        }, 900);
+        }, 850);
       }
     }
   };
 
   const resetMemoryGame = () => {
+    playClickSound();
     setCards(initializeCards());
     setFlippedIndices([]);
     setMoves(0);
@@ -84,7 +92,7 @@ export default function CuteGame() {
     setHasWon(false);
   };
 
-  // ================= BUBBLE POP GAME =================
+  // ================= 2. POP DE BURBUJAS ANTIESTRÉS =================
   const initialBubbles = [
     { id: 1, stress: 'Insomnio', relief: 'Sueño reparador 😴', popped: false, color: 'bubble-lila' },
     { id: 2, stress: 'Culpa', relief: 'Amor propio 💖', popped: false, color: 'bubble-rosa' },
@@ -100,6 +108,7 @@ export default function CuteGame() {
   const [poppedCount, setPoppedCount] = useState(0);
 
   const popBubble = (id) => {
+    playPopSound();
     setBubbles(bubbles.map(b => {
       if (b.id === id && !b.popped) {
         setPoppedCount(c => c + 1);
@@ -110,37 +119,164 @@ export default function CuteGame() {
   };
 
   const resetBubbles = () => {
+    playClickSound();
     setBubbles(initialBubbles);
     setPoppedCount(0);
+  };
+
+  // ================= 3. ATRAPA LA CALMA CON BUNNY (ARCADE CUTE) =================
+  const [bunnyPos, setBunnyPos] = useState(50); // % horizontal
+  const [score, setScore] = useState(0);
+  const [isBunnyPlaying, setIsBunnyPlaying] = useState(false);
+  const [fallingItems, setFallingItems] = useState([]);
+  const gameLoopRef = useRef(null);
+
+  const startBunnyGame = () => {
+    playClickSound();
+    setIsBunnyPlaying(true);
+    setScore(0);
+    setFallingItems([]);
+    setBunnyPos(50);
+  };
+
+  const stopBunnyGame = () => {
+    playClickSound();
+    setIsBunnyPlaying(false);
+    if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
+  };
+
+  // Mover a Bunny a la izquierda / derecha
+  const moveBunny = (direction) => {
+    playClickSound();
+    setBunnyPos(prev => {
+      if (direction === 'left') return Math.max(10, prev - 15);
+      return Math.min(90, prev + 15);
+    });
+  };
+
+  // Ciclo del juego Bunny
+  useEffect(() => {
+    if (!isBunnyPlaying) return;
+
+    const interval = setInterval(() => {
+      // Spawn new item
+      const types = [
+        { icon: '⭐', points: 10, type: 'good' },
+        { icon: '💖', points: 15, type: 'good' },
+        { icon: '🌸', points: 20, type: 'good' },
+        { icon: '🌪️', points: -5, type: 'bad' }
+      ];
+      const randomItem = types[Math.floor(Math.random() * types.length)];
+      const newItem = {
+        id: Math.random(),
+        icon: randomItem.icon,
+        points: randomItem.points,
+        type: randomItem.type,
+        x: Math.floor(Math.random() * 80) + 10,
+        y: 0
+      };
+
+      setFallingItems(prev => [...prev.slice(-15), newItem]);
+    }, 700);
+
+    const fallInterval = setInterval(() => {
+      setFallingItems(prev => {
+        return prev
+          .map(item => ({ ...item, y: item.y + 7 }))
+          .filter(item => {
+            // Colisión con Bunny en el fondo (y > 75)
+            if (item.y >= 75 && item.y <= 92 && Math.abs(item.x - bunnyPos) < 18) {
+              if (item.type === 'good') {
+                playCatchSound();
+                setScore(s => s + item.points);
+              } else {
+                setScore(s => Math.max(0, s + item.points));
+              }
+              return false; // capturado
+            }
+            return item.y < 100;
+          });
+      });
+    }, 80);
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(fallInterval);
+    };
+  }, [isBunnyPlaying, bunnyPos]);
+
+  // ================= 4. RULETA MÁGICA DE AMOR PROPIO =================
+  const wheelChallenges = [
+    { title: 'Taza de Calma ☕', desc: 'Disfruta de tu próxima bebida despacio, sintiendo el calor y agradeciendo a tu cuerpo.' },
+    { title: 'Elogio al Espejo 💖', desc: 'Mírate a los ojos y dite: "Estoy orgulloso/a de cómo sigues intentándolo cada día".' },
+    { title: 'Desconexión de 10 min 🌿', desc: 'Pon el celular en silencio durante 10 minutos y mira el cielo de Loreto respirando suave.' },
+    { title: 'Mensajito de Luz 💌', desc: 'Escribe a un amigo o ser querido: "Solo quería agradecerte por ser parte de mi vida".' },
+    { title: 'Soltar la Culpa 🕊️', desc: 'Escribe en un papel algo que te recriminas, perdónate de corazón y luego rómpelo.' },
+    { title: 'Abrazo de Mariposa 🦋', desc: 'Cruza tus brazos sobre el pecho y date 20 toquecitos rítmicos mientras sonríes.' }
+  ];
+
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [selectedChallenge, setSelectedChallenge] = useState(null);
+  const [wheelRotation, setWheelRotation] = useState(0);
+
+  const spinWheel = () => {
+    if (isSpinning) return;
+    playClickSound();
+    setIsSpinning(true);
+    setSelectedChallenge(null);
+
+    const randomRot = 1440 + Math.floor(Math.random() * 360);
+    setWheelRotation(prev => prev + randomRot);
+
+    setTimeout(() => {
+      playSuccessSound();
+      setIsSpinning(false);
+      const chosen = wheelChallenges[Math.floor(Math.random() * wheelChallenges.length)];
+      setSelectedChallenge(chosen);
+    }, 2800);
   };
 
   return (
     <section id="juegos" className="content-section">
       <div className="section-header">
-        <span className="section-tag">Diversión y Calma</span>
+        <span className="section-tag">Juegos Antiestrés y Diversión</span>
         <h2 className="section-title">Rincón de Juegos Relajantes</h2>
         <p className="section-description">
-          ¡Porque cuidar de tu mente también puede ser divertido y muy tierno! 
-          Elige un juego para entrenar tu concentración o reventar pensamientos estresantes.
+          ¡Cuidar tu salud mental también es jugar, reír y desconectar! 
+          Elige tu juego favorito con sonidos tiernos y animaciones relajantes.
         </p>
 
-        <div className="creative-tabs-nav" style={{ marginTop: '1.5rem' }}>
+        {/* NAVEGADOR DE JUEGOS */}
+        <div className="creative-tabs-nav" style={{ marginTop: '1.8rem' }}>
           <button 
             className={`creative-tab-btn ${activeGame === 'memory' ? 'active' : ''}`}
-            onClick={() => setActiveGame('memory')}
+            onClick={() => { playClickSound(); setActiveGame('memory'); }}
           >
-            🐰 Memoria de la Calma (Pares)
+            🐰 1. Memoria de la Calma
           </button>
           <button 
             className={`creative-tab-btn ${activeGame === 'bubbles' ? 'active' : ''}`}
-            onClick={() => setActiveGame('bubbles')}
+            onClick={() => { playClickSound(); setActiveGame('bubbles'); }}
           >
-            🫧 Pop Antiestrés de Burbujas
+            🫧 2. Pop de Burbujas
+          </button>
+          <button 
+            className={`creative-tab-btn ${activeGame === 'bunny' ? 'active' : ''}`}
+            onClick={() => { playClickSound(); setActiveGame('bunny'); }}
+          >
+            🐇 3. Atrapa la Paz con Bunny
+          </button>
+          <button 
+            className={`creative-tab-btn ${activeGame === 'wheel' ? 'active' : ''}`}
+            onClick={() => { playClickSound(); setActiveGame('wheel'); }}
+          >
+            🎡 4. Ruleta de Amor Propio
           </button>
         </div>
       </div>
 
-      {activeGame === 'memory' ? (
+      {/* 1. JUEGO DE MEMORIA */}
+      {activeGame === 'memory' && (
         <div className="cute-game-container">
           <div className="game-stats-bar">
             <span>Intentos: <strong>{moves}</strong></span>
@@ -183,8 +319,10 @@ export default function CuteGame() {
             ))}
           </div>
         </div>
-      ) : (
-        /* BUBBLE POP GAME */
+      )}
+
+      {/* 2. POP DE BURBUJAS */}
+      {activeGame === 'bubbles' && (
         <div className="cute-game-container">
           <div className="game-stats-bar">
             <span>Burbujas reventadas: <strong>{poppedCount} de {bubbles.length}</strong></span>
@@ -194,7 +332,7 @@ export default function CuteGame() {
           </div>
 
           <p style={{ textAlign: 'center', color: 'var(--texto-secundario)', marginBottom: '1.5rem', fontWeight: 600 }}>
-            Toca o haz clic sobre cada burbuja estresante para destruirla y revelar su mensaje de alivio:
+            Toca o haz clic sobre cada burbuja estresante para reventarla con sonido pop y revelar su mensaje de alivio:
           </p>
 
           <div className="bubbles-interactive-field">
@@ -219,6 +357,117 @@ export default function CuteGame() {
               <h3 style={{ color: 'var(--rosado-fucsia)' }}>¡Todas las cargas reventadas!</h3>
               <p style={{ color: 'var(--texto-principal)', fontWeight: 600 }}>
                 Has transformado el estrés en afirmaciones de calma. Tu mente merece ligereza.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 3. ATRAPA LA CALMA CON BUNNY */}
+      {activeGame === 'bunny' && (
+        <div className="cute-game-container">
+          <div className="game-stats-bar">
+            <span>Puntos de Paz: <strong>{score}</strong></span>
+            <div>
+              {!isBunnyPlaying ? (
+                <button onClick={startBunnyGame} className="btn-primary" style={{ padding: '0.4rem 1.2rem', fontSize: '0.85rem' }}>
+                  ▶️ Jugar con Bunny
+                </button>
+              ) : (
+                <button onClick={stopBunnyGame} className="btn-secondary" style={{ padding: '0.4rem 1.1rem', fontSize: '0.85rem' }}>
+                  ⏸️ Pausar
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="bunny-arcade-arena">
+            {/* Elementos cayendo */}
+            {fallingItems.map((item) => (
+              <div
+                key={item.id}
+                className="falling-game-item"
+                style={{ left: `${item.x}%`, top: `${item.y}%` }}
+              >
+                {item.icon}
+              </div>
+            ))}
+
+            {/* Bunny en el suelo */}
+            <div 
+              className="bunny-player-sprite"
+              style={{ left: `${bunnyPos}%` }}
+            >
+              🐰
+            </div>
+          </div>
+
+          {/* Controles para móvil y teclado */}
+          <div className="bunny-controls-bar">
+            <button 
+              type="button"
+              className="btn-secondary" 
+              onClick={() => moveBunny('left')}
+              disabled={!isBunnyPlaying}
+            >
+              ⬅️ Mover Izquierda
+            </button>
+            <span style={{ color: 'var(--texto-secundario)', fontWeight: 700, fontSize: '0.9rem' }}>
+              Usa los botones o teclas para atrapar estrellas ⭐, flores 🌸 y corazones 💖
+            </span>
+            <button 
+              type="button"
+              className="btn-secondary" 
+              onClick={() => moveBunny('right')}
+              disabled={!isBunnyPlaying}
+            >
+              Mover Derecha ➡️
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 4. RULETA MÁGICA DE AMOR PROPIO */}
+      {activeGame === 'wheel' && (
+        <div className="cute-game-container" style={{ textAlign: 'center' }}>
+          <p style={{ color: 'var(--texto-secundario)', fontSize: '1.1rem', marginBottom: '1.5rem', fontWeight: 600 }}>
+            Gira la ruleta mágica para recibir una misión tierna de amor propio para hoy:
+          </p>
+
+          <div className="wheel-spin-wrapper">
+            <div 
+              className="wheel-disc-visual"
+              style={{ transform: `rotate(${wheelRotation}deg)`, transition: isSpinning ? 'transform 2.8s cubic-bezier(0.15, 0.9, 0.25, 1)' : 'none' }}
+            >
+              <div className="wheel-segment seg-1">🌸</div>
+              <div className="wheel-segment seg-2">💖</div>
+              <div className="wheel-segment seg-3">🐰</div>
+              <div className="wheel-segment seg-4">⭐</div>
+              <div className="wheel-segment seg-5">🦋</div>
+              <div className="wheel-segment seg-6">☕</div>
+            </div>
+            <div className="wheel-pointer-arrow">🔻</div>
+          </div>
+
+          <div style={{ marginTop: '2rem' }}>
+            <button
+              onClick={spinWheel}
+              disabled={isSpinning}
+              className="btn-primary"
+              style={{ padding: '0.9rem 2.2rem', fontSize: '1.1rem' }}
+            >
+              {isSpinning ? '🌀 Girando con magia...' : '🎡 ¡Girar la Ruleta!'}
+            </button>
+          </div>
+
+          {selectedChallenge && (
+            <div className="wheel-result-card">
+              <span style={{ fontSize: '2.5rem' }}>🎁✨</span>
+              <h3 style={{ color: 'var(--rosado-fucsia)', margin: '0.5rem 0' }}>
+                Tu Desafío de Hoy: {selectedChallenge.title}
+              </h3>
+              <p style={{ color: 'var(--texto-principal)', fontSize: '1.1rem', fontWeight: 600, lineHeight: '1.5' }}>
+                {selectedChallenge.desc}
               </p>
             </div>
           )}

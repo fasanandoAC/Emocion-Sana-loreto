@@ -3,12 +3,15 @@ import './App.css';
 import Decorations from './components/Decorations';
 import EmotionalCompass from './components/EmotionalCompass';
 import CreativeSpace from './components/CreativeSpace';
+import MuralDeDibujos from './components/MuralDeDibujos';
 import InteractiveQuiz from './components/InteractiveQuiz';
 import CuteGame from './components/CuteGame';
 import EmotionalTools from './components/EmotionalTools';
 import PersonalReflection from './components/PersonalReflection';
 import TipsSection from './components/TipsSection';
 import MentalHealthConsequences from './components/MentalHealthConsequences';
+import SoundBar from './components/SoundBar';
+import { playZenBell, playClickSound } from './utils/audio';
 
 export default function App() {
   // Estado para el semáforo / selector de emociones
@@ -40,7 +43,19 @@ export default function App() {
   const [activeFilter, setActiveFilter] = useState('Todos');
   const [selectedArticle, setSelectedArticle] = useState(null);
 
-  // Control del temporizador de respiración
+  // Efecto de sonido global en botones y elementos interactivos
+  useEffect(() => {
+    const handleGlobalClick = (e) => {
+      const isInteractive = e.target.closest('button, a, .tool-mode-btn, .color-dot, .sticker-option, .sticker-tool-btn, .sticky-note-card, .emotion-compass-card, .quiz-option-btn, .ambient-type-btn');
+      if (isInteractive) {
+        playClickSound();
+      }
+    };
+    window.addEventListener('click', handleGlobalClick);
+    return () => window.removeEventListener('click', handleGlobalClick);
+  }, []);
+
+  // Control del temporizador de respiración con campanillas zen
   useEffect(() => {
     let interval = null;
     if (isBreathingActive) {
@@ -51,15 +66,19 @@ export default function App() {
           } else {
             if (breathPhase === 'inhale') {
               setBreathPhase('hold');
+              playZenBell('hold');
               return 4;
             } else if (breathPhase === 'hold') {
               setBreathPhase('exhale');
+              playZenBell('exhale');
               return 4;
             } else if (breathPhase === 'exhale') {
               setBreathPhase('rest');
+              playZenBell('rest');
               return 4;
             } else {
               setBreathPhase('inhale');
+              playZenBell('inhale');
               setCyclesCompleted((c) => c + 1);
               return 4;
             }
@@ -302,6 +321,7 @@ Claves para cuidarte:
             <li><a href="#inicio">Inicio</a></li>
             <li><a href="#brujula-emocional">Emociones</a></li>
             <li><a href="#espacio-creativo">Creatividad</a></li>
+            <li><a href="#muro-de-dibujos">Muro de Dibujos</a></li>
             <li><a href="#cuestionario">Test</a></li>
             <li><a href="#juegos">Juegos</a></li>
             <li><a href="#herramientas-emocionales">Herramientas</a></li>
@@ -377,10 +397,10 @@ Claves para cuidarte:
           <a href="#brujula-emocional" className="btn-primary">
             <span>🧭</span> Identificar mis Emociones
           </a>
-          <a href="#cuestionario" className="btn-secondary">
-            <span>📝</span> Cuestionario de Bienestar
+          <a href="#muro-de-dibujos" className="btn-pink">
+            <span>🖼️</span> Muro de Dibujos
           </a>
-          <a href="#espacio-creativo" className="btn-pink">
+          <a href="#espacio-creativo" className="btn-secondary">
             <span>🎨</span> Espacio Creativo
           </a>
           <a href="#juegos" className="btn-secondary">
@@ -392,6 +412,7 @@ Claves para cuidarte:
       {/* COMPONENTES INTERACTIVOS PRINCIPALES */}
       <EmotionalCompass />
       <CreativeSpace />
+      <MuralDeDibujos />
       <InteractiveQuiz />
       <CuteGame />
       <EmotionalTools />
@@ -615,10 +636,15 @@ Claves para cuidarte:
 
           <div className="breathing-controls">
             <button
-              onClick={() => setIsBreathingActive(!isBreathingActive)}
+              onClick={() => {
+                if (!isBreathingActive) {
+                  playZenBell('inhale');
+                }
+                setIsBreathingActive(!isBreathingActive);
+              }}
               className="btn-primary"
             >
-              {isBreathingActive ? '⏸️ Pausar Ejercicio' : '▶️ Iniciar Respiración'}
+              {isBreathingActive ? '⏸️ Pausar Ejercicio' : '▶️ Iniciar Respiración con Sonido Zen 🔔'}
             </button>
             {isBreathingActive && (
               <button
@@ -631,6 +657,14 @@ Claves para cuidarte:
                 🔄 Reiniciar
               </button>
             )}
+            <button
+              type="button"
+              onClick={() => playZenBell(breathPhase)}
+              className="btn-secondary"
+              title="Escuchar campanilla de meditación"
+            >
+              🔔 Probar Campana Zen
+            </button>
           </div>
         </div>
 
@@ -962,6 +996,9 @@ Claves para cuidarte:
           </p>
         </div>
       </footer>
+
+      {/* Panel flotante de sonidos relajantes */}
+      <SoundBar />
     </div>
   );
 }

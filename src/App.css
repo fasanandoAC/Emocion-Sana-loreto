@@ -2423,6 +2423,474 @@
   box-shadow: var(--shadow-lg);
 }
 
+/* =========================================================
+   PANEL FLOTANTE DE SONIDOS DE RELAJACIÓN Y MUTEO
+   ========================================================= */
+.sound-floating-panel {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  z-index: 999;
+  background: rgba(255, 255, 255, 0.94);
+  border: 2px solid var(--rosado-suave);
+  border-radius: 24px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 10px 30px rgba(236, 72, 153, 0.25), 0 0 20px rgba(216, 180, 254, 0.3);
+  backdrop-filter: blur(14px);
+  max-width: 320px;
+  transition: transform 0.3s ease;
+}
+
+.sound-floating-panel:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 35px rgba(244, 114, 182, 0.35);
+}
+
+.sound-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  border-bottom: 1.5px solid var(--lila-claro);
+  padding-bottom: 0.5rem;
+}
+
+.sound-panel-title {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--texto-principal);
+}
+
+.sound-mute-btn {
+  background: var(--lila-muy-claro);
+  border: 1px solid var(--lila-medio);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--rosado-fucsia);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sound-mute-btn.muted {
+  background: #ffe4e6;
+  border-color: #f43f5e;
+  color: #be123c;
+}
+
+.sound-ambient-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.ambient-type-buttons {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: space-between;
+}
+
+.ambient-type-btn {
+  flex: 1;
+  padding: 0.35rem 0.5rem;
+  border-radius: 999px;
+  background: var(--lila-muy-claro);
+  border: 1px solid var(--lila-medio);
+  color: var(--texto-secundario);
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ambient-type-btn.active {
+  background: linear-gradient(135deg, var(--lila-medio) 0%, var(--rosado-suave) 100%);
+  color: #ffffff;
+  border-color: var(--rosado-vibrante);
+}
+
+.sound-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.ambient-play-toggle {
+  flex: 1;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--rosado-suave) 0%, var(--rosado-vibrante) 100%);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.8rem;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+}
+
+.ambient-play-toggle.playing {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.volume-control-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.sound-volume-slider {
+  width: 60px;
+  accent-color: var(--rosado-vibrante);
+  cursor: pointer;
+}
+
+/* =========================================================
+   MURO DE DIBUJOS COMUNITARIO
+   ========================================================= */
+.mural-workbench-container {
+  display: flex;
+  justify-content: center;
+}
+
+.drawing-pad-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid var(--rosado-suave);
+  border-radius: 32px;
+  padding: 2.2rem;
+  box-shadow: var(--shadow-lg);
+  max-width: 860px;
+  width: 100%;
+}
+
+.canvas-header-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+  border-bottom: 2px solid var(--lila-claro);
+  padding-bottom: 1rem;
+}
+
+.tool-mode-btn {
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  background: var(--lila-muy-claro);
+  border: 1.5px solid var(--lila-medio);
+  color: var(--texto-secundario);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tool-mode-btn.active {
+  background: linear-gradient(135deg, var(--lila-medio) 0%, var(--rosado-suave) 100%);
+  color: #ffffff;
+  border-color: var(--rosado-vibrante);
+  box-shadow: 0 4px 12px rgba(244, 114, 182, 0.3);
+}
+
+.canvas-tools-palette {
+  background: var(--lila-muy-claro);
+  border: 1.5px solid var(--lila-medio);
+  border-radius: 20px;
+  padding: 0.9rem 1.4rem;
+  margin-bottom: 1.2rem;
+}
+
+.stickers-select-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.sticker-tool-btn {
+  background: #ffffff;
+  border: 1.5px solid var(--lila-medio);
+  border-radius: 12px;
+  padding: 0.35rem 0.6rem;
+  font-size: 1.35rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.sticker-tool-btn:hover,
+.sticker-tool-btn.active {
+  background: var(--rosado-pastel);
+  border-color: var(--rosado-vibrante);
+  transform: scale(1.2);
+}
+
+.brush-controls-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+}
+
+.canvas-frame {
+  border-radius: 20px;
+  overflow: hidden;
+  border: 2px solid var(--lila-medio);
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.art-drawing-board {
+  max-width: 100%;
+  height: auto;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.publish-artwork-form {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.publish-inputs-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 1rem;
+}
+
+.feeling-select {
+  background: var(--lila-muy-claro);
+  border: 1.5px solid var(--lila-medio);
+  border-radius: 999px;
+  padding: 0.65rem 1.2rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--texto-principal);
+  outline: none;
+  cursor: pointer;
+}
+
+.feeling-select:focus {
+  border-color: var(--rosado-vibrante);
+  background: #ffffff;
+}
+
+.artworks-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 1.8rem;
+}
+
+.artwork-gallery-card {
+  background: #ffffff;
+  border: 2px solid var(--rosado-suave);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.artwork-gallery-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 35px rgba(244, 114, 182, 0.25);
+}
+
+.artwork-image-container {
+  height: 220px;
+  background: var(--lila-muy-claro);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-bottom: 2px solid var(--lila-claro);
+}
+
+.artwork-rendered-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #ffffff;
+}
+
+.artwork-placeholder-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.artwork-card-info {
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.artwork-card-title {
+  font-size: 1.25rem;
+  color: var(--texto-principal);
+  font-weight: 800;
+}
+
+.artwork-feeling-badge {
+  display: inline-block;
+  background: var(--lila-claro);
+  color: var(--rosado-fucsia);
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  width: fit-content;
+}
+
+.artwork-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.8rem;
+  border-top: 1px dashed var(--lila-medio);
+  padding-top: 0.75rem;
+}
+
+.artwork-artist-tag {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--texto-secundario);
+}
+
+.artwork-love-btn {
+  background: var(--rosado-pastel);
+  border: 1.5px solid var(--rosado-suave);
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--rosado-fucsia);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.artwork-love-btn:hover {
+  transform: scale(1.15);
+  background: var(--rosado-vibrante);
+  color: #ffffff;
+}
+
+/* =========================================================
+   MINIJUEGO ARCADE: BUNNY RUNNER & RULETA MÁGICA
+   ========================================================= */
+.bunny-arcade-arena {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background: linear-gradient(180deg, #f5f0ff 0%, #fdf2f8 85%, #ede9fe 100%);
+  border: 2px solid var(--lila-medio);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.falling-game-item {
+  position: absolute;
+  font-size: 2rem;
+  transform: translate(-50%, -50%);
+  transition: top 0.08s linear;
+  user-select: none;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+}
+
+.bunny-player-sprite {
+  position: absolute;
+  bottom: 12px;
+  font-size: 3.5rem;
+  transform: translateX(-50%);
+  transition: left 0.12s ease-out;
+  user-select: none;
+  filter: drop-shadow(0 6px 12px rgba(244, 114, 182, 0.4));
+}
+
+.bunny-controls-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* RULETA MÁGICA */
+.wheel-spin-wrapper {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  margin: 1.5rem auto 0;
+}
+
+.wheel-disc-visual {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 6px solid #ffffff;
+  box-shadow: 0 10px 30px rgba(236, 72, 153, 0.35);
+  background: conic-gradient(
+    #fce7f3 0deg 60deg,
+    #ede9fe 60deg 120deg,
+    #fdf4ff 120deg 180deg,
+    #ffe4e6 180deg 240deg,
+    #f3e8ff 240deg 300deg,
+    #fbcfe8 300deg 360deg
+  );
+  position: relative;
+}
+
+.wheel-segment {
+  position: absolute;
+  font-size: 2rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.seg-1 { top: 12px; left: 110px; }
+.seg-2 { top: 55px; right: 25px; }
+.seg-3 { bottom: 55px; right: 25px; }
+.seg-4 { bottom: 12px; left: 110px; }
+.seg-5 { bottom: 55px; left: 25px; }
+.seg-6 { top: 55px; left: 25px; }
+
+.wheel-pointer-arrow {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2.2rem;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+  z-index: 5;
+}
+
+.wheel-result-card {
+  background: linear-gradient(135deg, #faf5ff 0%, #fff1f2 100%);
+  border: 2px solid var(--rosado-vibrante);
+  border-radius: 24px;
+  padding: 1.8rem;
+  max-width: 580px;
+  margin: 2rem auto 0;
+  animation: fadeIn 0.4s ease;
+  box-shadow: var(--shadow-md);
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
