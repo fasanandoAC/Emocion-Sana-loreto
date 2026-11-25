@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import Decorations from './components/Decorations';
+import EmotionalCompass from './components/EmotionalCompass';
+import CreativeSpace from './components/CreativeSpace';
+import InteractiveQuiz from './components/InteractiveQuiz';
+import CuteGame from './components/CuteGame';
+import EmotionalTools from './components/EmotionalTools';
+import PersonalReflection from './components/PersonalReflection';
+import TipsSection from './components/TipsSection';
+import MentalHealthConsequences from './components/MentalHealthConsequences';
 
 export default function App() {
   // Estado para el semáforo / selector de emociones
@@ -274,6 +283,9 @@ Claves para cuidarte:
 
   return (
     <div className="app-container">
+      {/* Decoraciones flotantes cute (conejitos, cerebritos, mariposas, flores) */}
+      <Decorations />
+
       {/* Luces de fondo difusas en lila bajo, rosado y violeta */}
       <div className="bg-glow-orb orb-1"></div>
       <div className="bg-glow-orb orb-2"></div>
@@ -288,12 +300,18 @@ Claves para cuidarte:
         <nav>
           <ul className="nav-links">
             <li><a href="#inicio">Inicio</a></li>
-            <li><a href="#espacio-emocional">Espacio Emocional</a></li>
-            <li><a href="#actividades">Actividades</a></li>
+            <li><a href="#brujula-emocional">Emociones</a></li>
+            <li><a href="#espacio-creativo">Creatividad</a></li>
+            <li><a href="#cuestionario">Test</a></li>
+            <li><a href="#juegos">Juegos</a></li>
+            <li><a href="#herramientas-emocionales">Herramientas</a></li>
+            <li><a href="#espacio-emocional">Calma</a></li>
+            <li><a href="#reflexion-personal">Reflexión</a></li>
+            <li><a href="#consejos">Consejos</a></li>
+            <li><a href="#consecuencias">Consciencia</a></li>
             <li><a href="#biblioteca">Biblioteca</a></li>
-            <li><a href="#etapas">Etapas</a></li>
             <li><a href="#creadoras">Creadoras</a></li>
-            <li><a href="#ayuda">Ayuda Gratuita</a></li>
+            <li><a href="#ayuda">Ayuda</a></li>
           </ul>
         </nav>
         <a href="tel:113" className="nav-emergency-btn">
@@ -356,17 +374,27 @@ Claves para cuidarte:
 
         {/* BOTONES DE LLAMADO A LA ACCIÓN */}
         <div className="hero-cta-group">
-          <a href="#espacio-emocional" className="btn-primary">
-            <span>🌿</span> Entrar al Espacio Emocional
+          <a href="#brujula-emocional" className="btn-primary">
+            <span>🧭</span> Identificar mis Emociones
           </a>
-          <a href="#actividades" className="btn-secondary">
-            <span>✨</span> Actividades Interactivas
+          <a href="#cuestionario" className="btn-secondary">
+            <span>📝</span> Cuestionario de Bienestar
           </a>
-          <a href="#biblioteca" className="btn-pink">
-            <span>📚</span> Biblioteca Emocional
+          <a href="#espacio-creativo" className="btn-pink">
+            <span>🎨</span> Espacio Creativo
+          </a>
+          <a href="#juegos" className="btn-secondary">
+            <span>🐰</span> Juegos Antiestrés
           </a>
         </div>
       </main>
+
+      {/* COMPONENTES INTERACTIVOS PRINCIPALES */}
+      <EmotionalCompass />
+      <CreativeSpace />
+      <InteractiveQuiz />
+      <CuteGame />
+      <EmotionalTools />
 
       {/* SECCIÓN 1: ESPACIO EMOCIONAL (AMBIENTES Y DESCARGA) */}
       <section id="espacio-emocional" className="content-section">
@@ -657,6 +685,15 @@ Claves para cuidarte:
           )}
         </div>
       </section>
+
+      {/* DIARIO DE REFLEXIÓN PERSONAL */}
+      <PersonalReflection />
+
+      {/* CONSEJOS DE ORO PARA EL DÍA A DÍA */}
+      <TipsSection />
+
+      {/* CONSECUENCIAS DE NO CUIDAR LA SALUD MENTAL Y EMOCIONAL */}
+      <MentalHealthConsequences />
 
       {/* SECCIÓN 3: BIBLIOTECA EMOCIONAL */}
       <section id="biblioteca" className="content-section">
