@@ -940,13 +940,15 @@ Claves para cuidarte:
       </section>
 
       {/* SECCIÓN: CREADORAS */}
-      <section id="creadoras" className="content-section">
+      <section id="creadoras" className="content-section" style={{ padding: '2.5rem 1rem' }}>
         <div className="creators-card">
-          <span className="section-tag">Nuestra Misión y Corazón</span>
-          <h2 className="section-title" style={{ fontSize: '2.5rem' }}>
+          <span className="section-tag" style={{ fontSize: '0.82rem', padding: '0.35rem 1.1rem', marginBottom: '0.75rem' }}>
+            Nuestra Misión y Corazón
+          </span>
+          <h2 className="section-title" style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>
             Conoce a las Creadoras
           </h2>
-          <p className="section-description">
+          <p className="section-description" style={{ fontSize: '0.94rem', marginBottom: '1.2rem', maxWidth: '620px' }}>
             Esta plataforma nació de la empatía, el compromiso y el amor por nuestra comunidad en Loreto. 
             Queremos que cada joven, adolescente y adulto sepa que su bienestar emocional es lo más valioso.
           </p>
@@ -956,7 +958,7 @@ Claves para cuidarte:
               <div className="creator-avatar-icon">🌸</div>
               <h3 className="creator-name">Crhistel</h3>
               <span className="creator-role">Co-creadora e Impulsora</span>
-              <p style={{ fontSize: '0.92rem', color: 'var(--texto-secundario)', textAlign: 'center', marginTop: '0.35rem' }}>
+              <p style={{ fontSize: '0.86rem', color: 'var(--texto-secundario)', textAlign: 'center', marginTop: '0.25rem', lineHeight: '1.4' }}>
                 «Deseo que este rincón sea un abrazo sincero para cuando sientas que no puedes más.»
               </p>
             </div>
@@ -965,18 +967,18 @@ Claves para cuidarte:
               <div className="creator-avatar-icon">🌷</div>
               <h3 className="creator-name">Alexia</h3>
               <span className="creator-role">Co-creadora e Impulsora</span>
-              <p style={{ fontSize: '0.92rem', color: 'var(--texto-secundario)', textAlign: 'center', marginTop: '0.35rem' }}>
+              <p style={{ fontSize: '0.86rem', color: 'var(--texto-secundario)', textAlign: 'center', marginTop: '0.25rem', lineHeight: '1.4' }}>
                 «Cuidar de tu mente no es debilidad, es el mayor acto de amor y valentía que harás por ti.»
               </p>
             </div>
           </div>
 
-          <div style={{ background: 'var(--lila-muy-claro)', padding: '1.4rem 1.8rem', borderRadius: '20px', border: '1.5px solid var(--lila-medio)', maxWidth: '680px', margin: '0 auto' }}>
-            <p style={{ color: 'var(--texto-principal)', fontStyle: 'italic', fontWeight: 600, fontSize: '1.05rem', lineHeight: '1.6' }}>
+          <div style={{ background: 'var(--lila-muy-claro)', padding: '0.9rem 1.3rem', borderRadius: '18px', border: '1.5px solid var(--lila-medio)', maxWidth: '560px', margin: '0 auto' }}>
+            <p style={{ color: 'var(--texto-principal)', fontStyle: 'italic', fontWeight: 600, fontSize: '0.92rem', lineHeight: '1.5', margin: 0 }}>
               «Juntas creamos Emoción Sana Loreto para recordar que en nuestra región nadie camina solo/a. 
               Sanar es posible y estamos aquí para acompañarte en cada paso.»
             </p>
-            <span style={{ display: 'block', marginTop: '0.6rem', color: 'var(--rosado-fucsia)', fontWeight: 800 }}>
+            <span style={{ display: 'block', marginTop: '0.45rem', color: 'var(--rosado-fucsia)', fontWeight: 800, fontSize: '0.88rem' }}>
               — Crhistel & Alexia 💜
             </span>
           </div>
