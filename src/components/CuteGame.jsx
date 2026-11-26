@@ -124,12 +124,18 @@ export default function CuteGame() {
     setPoppedCount(0);
   };
 
-  // ================= 3. ATRAPA LA CALMA CON BUNNY (ARCADE CUTE) =================
+  // ================= 3. ATRAPA LA PAZ CON BUNNY (ARCADE CUTE) =================
   const [bunnyPos, setBunnyPos] = useState(50); // % horizontal
   const [score, setScore] = useState(0);
   const [isBunnyPlaying, setIsBunnyPlaying] = useState(false);
   const [fallingItems, setFallingItems] = useState([]);
-  const gameLoopRef = useRef(null);
+  const arenaRef = useRef(null);
+  const bunnyPosRef = useRef(50);
+
+  // Mantener actualizado el ref de posición para colisiones continuas
+  useEffect(() => {
+    bunnyPosRef.current = bunnyPos;
+  }, [bunnyPos]);
 
   const startBunnyGame = () => {
     playClickSound();
@@ -137,55 +143,103 @@ export default function CuteGame() {
     setScore(0);
     setFallingItems([]);
     setBunnyPos(50);
+    bunnyPosRef.current = 50;
   };
 
   const stopBunnyGame = () => {
     playClickSound();
     setIsBunnyPlaying(false);
-    if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
   };
 
-  // Mover a Bunny a la izquierda / derecha
+  // Mover a Bunny con el cursor del mouse dentro del área
+  const handleArenaMouseMove = (e) => {
+    if (!arenaRef.current) return;
+    const rect = arenaRef.current.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const percentage = (mouseX / rect.width) * 100;
+    const clamped = Math.max(6, Math.min(94, percentage));
+    setBunnyPos(clamped);
+    bunnyPosRef.current = clamped;
+  };
+
+  // Mover a Bunny en celulares y pantallas táctiles (deslizar el dedo)
+  const handleArenaTouchMove = (e) => {
+    if (!arenaRef.current || !e.touches || !e.touches[0]) return;
+    const rect = arenaRef.current.getBoundingClientRect();
+    const touchX = e.touches[0].clientX - rect.left;
+    const percentage = (touchX / rect.width) * 100;
+    const clamped = Math.max(6, Math.min(94, percentage));
+    setBunnyPos(clamped);
+    bunnyPosRef.current = clamped;
+  };
+
+  // Mover a Bunny con botones
   const moveBunny = (direction) => {
     playClickSound();
     setBunnyPos(prev => {
-      if (direction === 'left') return Math.max(10, prev - 15);
-      return Math.min(90, prev + 15);
+      const next = direction === 'left' ? Math.max(6, prev - 12) : Math.min(94, prev + 12);
+      bunnyPosRef.current = next;
+      return next;
     });
   };
 
-  // Ciclo del juego Bunny
+  // Control opcional por teclado (flechas o A/D)
+  useEffect(() => {
+    if (activeGame !== 'bunny' || !isBunnyPlaying) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        setBunnyPos(prev => {
+          const next = Math.max(6, prev - 8);
+          bunnyPosRef.current = next;
+          return next;
+        });
+      } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        setBunnyPos(prev => {
+          const next = Math.min(94, prev + 8);
+          bunnyPosRef.current = next;
+          return next;
+        });
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeGame, isBunnyPlaying]);
+
+  // Ciclo del juego Bunny (Spawn y caída fluida)
   useEffect(() => {
     if (!isBunnyPlaying) return;
 
+    // Generar nuevos elementos cada 650ms
     const interval = setInterval(() => {
-      // Spawn new item
       const types = [
         { icon: '⭐', points: 10, type: 'good' },
         { icon: '💖', points: 15, type: 'good' },
         { icon: '🌸', points: 20, type: 'good' },
+        { icon: '🕊️', points: 25, type: 'good' },
         { icon: '🌪️', points: -5, type: 'bad' }
       ];
       const randomItem = types[Math.floor(Math.random() * types.length)];
       const newItem = {
-        id: Math.random(),
+        id: Math.random() + Date.now(),
         icon: randomItem.icon,
         points: randomItem.points,
         type: randomItem.type,
-        x: Math.floor(Math.random() * 80) + 10,
+        x: Math.floor(Math.random() * 82) + 9,
         y: 0
       };
 
-      setFallingItems(prev => [...prev.slice(-15), newItem]);
-    }, 700);
+      setFallingItems(prev => [...prev.slice(-18), newItem]);
+    }, 650);
 
+    // Caída fluida a 50ms por cuadro
     const fallInterval = setInterval(() => {
       setFallingItems(prev => {
         return prev
-          .map(item => ({ ...item, y: item.y + 7 }))
+          .map(item => ({ ...item, y: item.y + 4.5 }))
           .filter(item => {
-            // Colisión con Bunny en el fondo (y > 75)
-            if (item.y >= 75 && item.y <= 92 && Math.abs(item.x - bunnyPos) < 18) {
+            const currentX = bunnyPosRef.current;
+            // Colisión con Bunny en el fondo (y entre 72% y 92%)
+            if (item.y >= 72 && item.y <= 92 && Math.abs(item.x - currentX) < 12) {
               if (item.type === 'good') {
                 playCatchSound();
                 setScore(s => s + item.points);
@@ -197,13 +251,13 @@ export default function CuteGame() {
             return item.y < 100;
           });
       });
-    }, 80);
+    }, 50);
 
     return () => {
       clearInterval(interval);
       clearInterval(fallInterval);
     };
-  }, [isBunnyPlaying, bunnyPos]);
+  }, [isBunnyPlaying]);
 
   // ================= 4. RULETA MÁGICA DE AMOR PROPIO =================
   const wheelChallenges = [
@@ -363,25 +417,61 @@ export default function CuteGame() {
         </div>
       )}
 
-      {/* 3. ATRAPA LA CALMA CON BUNNY */}
+      {/* 3. ATRAPA LA PAZ CON BUNNY */}
       {activeGame === 'bunny' && (
         <div className="cute-game-container">
           <div className="game-stats-bar">
             <span>Puntos de Paz: <strong>{score}</strong></span>
             <div>
               {!isBunnyPlaying ? (
-                <button onClick={startBunnyGame} className="btn-primary" style={{ padding: '0.4rem 1.2rem', fontSize: '0.85rem' }}>
+                <button onClick={startBunnyGame} className="btn-primary" style={{ padding: '0.45rem 1.3rem', fontSize: '0.88rem' }}>
                   ▶️ Jugar con Bunny
                 </button>
               ) : (
-                <button onClick={stopBunnyGame} className="btn-secondary" style={{ padding: '0.4rem 1.1rem', fontSize: '0.85rem' }}>
+                <button onClick={stopBunnyGame} className="btn-secondary" style={{ padding: '0.45rem 1.1rem', fontSize: '0.88rem' }}>
                   ⏸️ Pausar
                 </button>
               )}
             </div>
           </div>
 
-          <div className="bunny-arcade-arena">
+          {/* Área arcade interactiva con movimiento por ratón */}
+          <div 
+            ref={arenaRef}
+            className="bunny-arcade-arena"
+            onMouseMove={handleArenaMouseMove}
+            onTouchMove={handleArenaTouchMove}
+            onClick={() => {
+              if (!isBunnyPlaying) startBunnyGame();
+            }}
+          >
+            {/* Pantalla inicial con guía para usar el mouse */}
+            {!isBunnyPlaying && (
+              <div className="bunny-start-overlay">
+                <div className="bunny-overlay-badge">🐰 Atrapa la Paz con Bunny</div>
+                <p style={{ margin: 0, color: 'var(--texto-secundario)', fontSize: '0.96rem', maxWidth: '440px', lineHeight: 1.5 }}>
+                  ¡Mueve el cursor de tu <strong>mouse</strong> de lado a lado sobre esta pantalla para guiar a Bunny y atrapar las bendiciones de paz!
+                </p>
+                <div style={{ display: 'flex', gap: '0.8rem', fontSize: '1.25rem', margin: '0.2rem 0' }}>
+                  <span title="Estrella (+10)">⭐</span>
+                  <span title="Amor (+15)">💖</span>
+                  <span title="Flor (+20)">🌸</span>
+                  <span title="Paz (+25)">🕊️</span>
+                </div>
+                <button 
+                  type="button" 
+                  className="btn-primary" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    startBunnyGame();
+                  }}
+                  style={{ marginTop: '0.25rem', padding: '0.55rem 1.6rem', fontSize: '0.95rem' }}
+                >
+                  ▶️ ¡Iniciar con el Mouse!
+                </button>
+              </div>
+            )}
+
             {/* Elementos cayendo */}
             {fallingItems.map((item) => (
               <div
@@ -393,16 +483,17 @@ export default function CuteGame() {
               </div>
             ))}
 
-            {/* Bunny en el suelo */}
+            {/* Bunny en el suelo que sigue el movimiento del mouse */}
             <div 
               className="bunny-player-sprite"
               style={{ left: `${bunnyPos}%` }}
+              title="Bunny sigue el cursor de tu mouse"
             >
               🐰
             </div>
           </div>
 
-          {/* Controles para móvil y teclado */}
+          {/* Barra de indicaciones y controles auxiliares */}
           <div className="bunny-controls-bar">
             <button 
               type="button"
@@ -410,18 +501,19 @@ export default function CuteGame() {
               onClick={() => moveBunny('left')}
               disabled={!isBunnyPlaying}
             >
-              ⬅️ Mover Izquierda
+              ⬅️ Izquierda
             </button>
-            <span style={{ color: 'var(--texto-secundario)', fontWeight: 700, fontSize: '0.9rem' }}>
-              Usa los botones o teclas para atrapar estrellas ⭐, flores 🌸 y corazones 💖
-            </span>
+            <div className="bunny-mouse-hint">
+              <span>🖱️</span>
+              <span><strong>Mueve el mouse</strong> de izquierda a derecha sobre el área de juego para mover a Bunny 🐰</span>
+            </div>
             <button 
               type="button"
               className="btn-secondary" 
               onClick={() => moveBunny('right')}
               disabled={!isBunnyPlaying}
             >
-              Mover Derecha ➡️
+              Derecha ➡️
             </button>
           </div>
         </div>
