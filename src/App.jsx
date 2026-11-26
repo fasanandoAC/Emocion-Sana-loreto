@@ -339,7 +339,7 @@ Claves para cuidarte:
             <li><a href="#inicio">🏠 Inicio</a></li>
             <li><a href="#brujula-emocional">🧭 Emociones</a></li>
             <li><a href="#espacio-creativo">🎨 Creatividad</a></li>
-            <li><a href="#muro-de-dibujos">🖌️ Muro Dibujo</a></li>
+            <li><a href="#muro-de-dibujos">🖌️ Muro</a></li>
             <li><a href="#cuestionario">📝 Test</a></li>
             <li><a href="#juegos">🎮 Juegos</a></li>
             <li><a href="#herramientas-emocionales">🛠️ Herramientas</a></li>
