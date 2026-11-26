@@ -936,17 +936,6 @@ Claves para cuidarte:
               </span>
             </div>
           </div>
-
-          <div style={{ marginTop: '2.5rem' }}>
-            <a 
-              href="https://api.whatsapp.com/send?text=Hola,%20necesito%20orientaci%C3%B3n%20y%20apoyo%20emocional%20con%20Emoci%C3%B3n%20Sana%20Loreto" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="btn-primary"
-            >
-              <span>💬</span> Escribir por WhatsApp a una Red de Apoyo
-            </a>
-          </div>
         </div>
       </section>
 
