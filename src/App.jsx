@@ -12,6 +12,8 @@ import TipsSection from './components/TipsSection';
 import MentalHealthConsequences from './components/MentalHealthConsequences';
 import SoundBar from './components/SoundBar';
 import { playZenBell, playClickSound } from './utils/audio';
+import imgCieloEstrellado from './assets/cielo-estrellado.jpg';
+import imgAtardecerRioAmazonas from './assets/atardecer-rio-amazonas.jpg';
 
 export default function App() {
   // Estado para el semáforo / selector de emociones
@@ -107,16 +109,16 @@ export default function App() {
       affirmation: '«La lluvia no destruye el paisaje, lo nutre. Tus lágrimas también limpian tu corazón para volver a florecer.»'
     },
     rio: {
-      title: 'Río Amazonas al Atardecer',
-      desc: 'Las aguas tranquilas reflejando destellos violetas y rosados del cielo loretano. Respira con el compás de la marea suave.',
-      image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
-      affirmation: '«No tienes que forzar el rumbo de cada ola; suelta la necesidad de control y permite que la paz te encuentre.»'
+      title: 'Atardecer Río Amazonas',
+      desc: 'El calor y la serenidad del atardecer reflejados en las aguas doradas de nuestro gran río. Cierra los ojos y siente cómo el día se despide en calma.',
+      image: imgAtardecerRioAmazonas,
+      affirmation: '«Como el sol que se oculta sobre el Amazonas tras un día de vida, permítete descansar; mañana la luz volverá a renacer en ti.»'
     },
     noche: {
       title: 'Cielo Estrellado y Silencio',
-      desc: 'La quietud de la noche sobre el río Itaya y Nanay. Un manto protector de estrellas donde el descanso es bienvenido.',
-      image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
-      affirmation: '«Por más oscura que parezca la noche, el amanecer siempre llega. Tu mañana está esperándote.»'
+      desc: 'La inmensidad y quietud del firmamento nocturno estrellado. Un manto protector de luz y paz donde tus pensamientos encuentran descanso.',
+      image: imgCieloEstrellado,
+      affirmation: '«Por más oscura que parezca la noche, las estrellas brillan con más fuerza. Tu calma y tu claridad están en ti.»'
     }
   };
 
@@ -462,7 +464,7 @@ Claves para cuidarte:
               className={`ambiance-btn ${activeAmbiance === 'rio' ? 'active' : ''}`}
               onClick={() => setActiveAmbiance('rio')}
             >
-              🌊 Río al Atardecer
+              🌅 Atardecer Río Amazonas
             </button>
             <button 
               className={`ambiance-btn ${activeAmbiance === 'noche' ? 'active' : ''}`}
