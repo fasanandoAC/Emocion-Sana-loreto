@@ -312,31 +312,46 @@ Claves para cuidarte:
 
       {/* NAVBAR */}
       <header className="navbar">
-        <div className="nav-brand">
-          <div className="brand-icon-box">🧠</div>
-          <span className="brand-text">Emoción Sana Loreto</span>
+        <div className="nav-top-row">
+          <div className="nav-brand">
+            <div className="brand-icon-box">🧠</div>
+            <div className="brand-text-group">
+              <span className="brand-text">Emoción Sana Loreto</span>
+              <span className="brand-tagline">Salud Mental & Emocional · Loreto</span>
+            </div>
+          </div>
+
+          <div className="nav-top-actions">
+            {/* Ajustes de Sonido en la parte superior junto a Línea 113 */}
+            <SoundBar />
+
+            {/* Botón de Emergencia Línea 113 */}
+            <a href="tel:113" className="nav-emergency-btn" title="Llamar gratis a Línea 113 opción 5">
+              <span>🚨</span>
+              <span className="emergency-label">Línea 113 (Opción 5)</span>
+            </a>
+          </div>
         </div>
-        <nav>
-          <ul className="nav-links">
-            <li><a href="#inicio">Inicio</a></li>
-            <li><a href="#brujula-emocional">Emociones</a></li>
-            <li><a href="#espacio-creativo">Creatividad</a></li>
-            <li><a href="#muro-de-dibujos">Muro de Dibujos</a></li>
-            <li><a href="#cuestionario">Test</a></li>
-            <li><a href="#juegos">Juegos</a></li>
-            <li><a href="#herramientas-emocionales">Herramientas</a></li>
-            <li><a href="#espacio-emocional">Calma</a></li>
-            <li><a href="#reflexion-personal">Reflexión</a></li>
-            <li><a href="#consejos">Consejos</a></li>
-            <li><a href="#consecuencias">Consciencia</a></li>
-            <li><a href="#biblioteca">Biblioteca</a></li>
-            <li><a href="#creadoras">Creadoras</a></li>
-            <li><a href="#ayuda">Ayuda</a></li>
+
+        {/* Barra de navegación pequeña y compacta para alcanzar todo el espacio */}
+        <nav className="nav-compact-bar" aria-label="Navegación principal del sitio">
+          <ul className="nav-links-compact">
+            <li><a href="#inicio">🏠 Inicio</a></li>
+            <li><a href="#brujula-emocional">🧭 Emociones</a></li>
+            <li><a href="#espacio-creativo">🎨 Creatividad</a></li>
+            <li><a href="#muro-de-dibujos">🖌️ Muro Dibujo</a></li>
+            <li><a href="#cuestionario">📝 Test</a></li>
+            <li><a href="#juegos">🎮 Juegos</a></li>
+            <li><a href="#herramientas-emocionales">🛠️ Herramientas</a></li>
+            <li><a href="#espacio-emocional">🌿 Calma</a></li>
+            <li><a href="#reflexion-personal">💭 Reflexión</a></li>
+            <li><a href="#consejos">💡 Consejos</a></li>
+            <li><a href="#consecuencias">⚠️ Consciencia</a></li>
+            <li><a href="#biblioteca">📚 Biblioteca</a></li>
+            <li><a href="#creadoras">👭 Creadoras</a></li>
+            <li><a href="#ayuda">🆘 Ayuda</a></li>
           </ul>
         </nav>
-        <a href="tel:113" className="nav-emergency-btn">
-          <span>🚨</span> Línea 113 (Opción 5)
-        </a>
       </header>
 
       {/* HERO SECTION */}
@@ -996,9 +1011,6 @@ Claves para cuidarte:
           </p>
         </div>
       </footer>
-
-      {/* Panel flotante de sonidos relajantes */}
-      <SoundBar />
     </div>
   );
 }

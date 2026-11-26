@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   startAmbientSound, 
   stopAmbientSound, 
@@ -12,6 +12,8 @@ export default function SoundBar() {
   const [selectedAmbient, setSelectedAmbient] = useState('lluvia'); // 'lluvia', 'rio', 'zen'
   const [volume, setVolume] = useState(0.25);
   const [isMuted, setIsMuted] = useState(getMuteState());
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const handleToggleAmbient = () => {
     playClickSound();
@@ -40,7 +42,8 @@ export default function SoundBar() {
     }
   };
 
-  const handleToggleMute = () => {
+  const handleToggleMute = (e) => {
+    e.stopPropagation();
     const muted = toggleMute();
     setIsMuted(muted);
     if (muted) {
@@ -50,74 +53,138 @@ export default function SoundBar() {
     }
   };
 
-  // Limpiar al desmontar
+  // Cerrar dropdown si se hace clic fuera
   useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
       stopAmbientSound();
     };
   }, []);
 
+  const getAmbientLabel = () => {
+    if (selectedAmbient === 'lluvia') return '🌧️ Lluvia';
+    if (selectedAmbient === 'rio') return '🌊 Río';
+    return '🔔 Cuenco';
+  };
+
   return (
-    <aside className="sound-floating-panel" aria-label="Control de sonidos de relajación">
-      <div className="sound-panel-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span style={{ fontSize: '1.25rem' }}>🎵</span>
-          <span className="sound-panel-title">Sonidos de Relajación</span>
-        </div>
-        <button
-          onClick={handleToggleMute}
-          className={`sound-mute-btn ${isMuted ? 'muted' : ''}`}
-          title={isMuted ? 'Activar todos los sonidos' : 'Silenciar todos los sonidos'}
-        >
-          {isMuted ? '🔇 Silenciado' : '🔊 Con Sonido'}
-        </button>
-      </div>
+    <div className="nav-sound-settings-wrapper" ref={dropdownRef}>
+      {/* Botón principal arriba en el header junto a la Línea 113 */}
+      <button
+        type="button"
+        className={`nav-sound-btn ${isPlayingAmbient ? 'playing' : ''} ${isMuted ? 'muted' : ''}`}
+        onClick={() => {
+          playClickSound();
+          setIsOpen(!isOpen);
+        }}
+        title="Ajustes de Sonido y Música de Relajación"
+        aria-expanded={isOpen}
+      >
+        <span className="sound-btn-icon">{isMuted ? '🔇' : (isPlayingAmbient ? '🎵' : '🔊')}</span>
+        <span className="sound-btn-text">
+          {isMuted ? 'Silenciado' : (isPlayingAmbient ? `${getAmbientLabel()} (Sonando)` : 'Ajustes de Sonido')}
+        </span>
+        <span className="sound-btn-arrow">{isOpen ? '▲' : '▼'}</span>
+      </button>
 
-      <div className="sound-ambient-controls">
-        <div className="ambient-type-buttons">
-          <button
-            className={`ambient-type-btn ${selectedAmbient === 'lluvia' ? 'active' : ''}`}
-            onClick={() => handleChangeAmbient('lluvia')}
-          >
-            🌧️ Lluvia
-          </button>
-          <button
-            className={`ambient-type-btn ${selectedAmbient === 'rio' ? 'active' : ''}`}
-            onClick={() => handleChangeAmbient('rio')}
-          >
-            🌊 Río
-          </button>
-          <button
-            className={`ambient-type-btn ${selectedAmbient === 'zen' ? 'active' : ''}`}
-            onClick={() => handleChangeAmbient('zen')}
-          >
-            🔔 Cuenco Zen
-          </button>
-        </div>
+      {/* Popover / Menú desplegable de ajustes */}
+      {isOpen && (
+        <div className="sound-top-popover">
+          <div className="sound-popover-header">
+            <span style={{ fontWeight: 800, color: 'var(--texto-principal)', fontSize: '0.9rem' }}>
+              ⚙️ Ajustes de Sonido y Música
+            </span>
+            <button 
+              type="button" 
+              className="popover-close-btn"
+              onClick={() => setIsOpen(false)}
+            >
+              ✕
+            </button>
+          </div>
 
-        <div className="sound-action-row">
-          <button
-            onClick={handleToggleAmbient}
-            className={`ambient-play-toggle ${isPlayingAmbient ? 'playing' : ''}`}
-          >
-            {isPlayingAmbient ? '⏸️ Pausar Ambiente' : '▶️ Reproducir Ambiente'}
-          </button>
+          {/* Toggle de sonido general de la página */}
+          <div className="popover-row">
+            <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--texto-secundario)' }}>
+              Efectos en botones:
+            </span>
+            <button
+              type="button"
+              onClick={handleToggleMute}
+              className={`popover-toggle-btn ${isMuted ? 'muted' : 'active'}`}
+            >
+              {isMuted ? '🔇 Silenciados' : '🔊 Activados'}
+            </button>
+          </div>
 
-          <div className="volume-control-wrap">
-            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--texto-secundario)' }}>Vol:</span>
-            <input
-              type="range"
-              min="0.05"
-              max="0.6"
-              step="0.05"
-              value={volume}
-              onChange={handleVolumeChange}
-              className="sound-volume-slider"
-              title="Volumen ambiental"
-            />
+          {/* Selector de ambiente de relajación */}
+          <div style={{ marginTop: '0.4rem' }}>
+            <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--texto-secundario)', display: 'block', marginBottom: '0.35rem' }}>
+              Música ambiental relajante:
+            </span>
+            <div className="ambient-pills-row">
+              <button
+                type="button"
+                className={`ambient-pill-btn ${selectedAmbient === 'lluvia' ? 'active' : ''}`}
+                onClick={() => handleChangeAmbient('lluvia')}
+                disabled={isMuted}
+              >
+                🌧️ Lluvia
+              </button>
+              <button
+                type="button"
+                className={`ambient-pill-btn ${selectedAmbient === 'rio' ? 'active' : ''}`}
+                onClick={() => handleChangeAmbient('rio')}
+                disabled={isMuted}
+              >
+                🌊 Río
+              </button>
+              <button
+                type="button"
+                className={`ambient-pill-btn ${selectedAmbient === 'zen' ? 'active' : ''}`}
+                onClick={() => handleChangeAmbient('zen')}
+                disabled={isMuted}
+              >
+                🔔 Cuenco
+              </button>
+            </div>
+          </div>
+
+          {/* Botón de reproducción y volumen */}
+          <div style={{ marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+            <button
+              type="button"
+              onClick={handleToggleAmbient}
+              disabled={isMuted}
+              className={`ambient-main-play-btn ${isPlayingAmbient ? 'playing' : ''}`}
+            >
+              {isPlayingAmbient ? '⏸️ Pausar Música de Relajación' : '▶️ Reproducir Música de Relajación'}
+            </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.6rem' }}>
+              <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--texto-secundario)' }}>
+                Volumen:
+              </span>
+              <input
+                type="range"
+                min="0.05"
+                max="0.6"
+                step="0.05"
+                value={volume}
+                onChange={handleVolumeChange}
+                disabled={isMuted}
+                style={{ width: '130px', accentColor: 'var(--rosado-vibrante)', cursor: 'pointer' }}
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </aside>
+      )}
+    </div>
   );
 }
